@@ -1,5 +1,0 @@
-#!/bin/sh
- appname="FoxitReader"
-
- selfpath="/home/dylan/opt/foxitsoftware/foxitreader"
- exec "$selfpath/$appname" "$@"
