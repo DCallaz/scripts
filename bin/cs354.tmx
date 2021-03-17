@@ -1,0 +1,5 @@
+name cs354
+dir cs354/project4/
+window
+	split v
+end

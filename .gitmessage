@@ -1,0 +1,23 @@
+########50 characters############################
+#Subject = Explain in short the reason for commit
+#[Subject]
+
+########72 characters##################################################
+
+[Details]
+# Subject but with more detail if needed
+#	* Use dash for bullet points
+#N/A
+
+[Note]
+# Feat, fix, style, refactor, test, docs, chore. go here
+#	* Use dash for bullet points
+#N/A
+
+[Bugs]
+# Any bugs found, fixes for bugs etc
+#	* Use dash for bullet points
+#N/A
+
+[File's changed]
+#	* Bullet the files that where changed in this commit

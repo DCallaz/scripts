@@ -1,0 +1,7 @@
+#!/bin/bash
+old=$1
+file=${old[@]//\.tex/}
+pdflatex $file.tex
+pdflatex $file.tex
+ls $file.* | grep -P $file'\.(?!tex|pdf)' | xargs rm
+evince $file.pdf &

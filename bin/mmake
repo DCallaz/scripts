@@ -1,0 +1,26 @@
+#!/bin/bash
+HOME=$(echo ~)
+while [ "$PWD" != $HOME ] && [ -z $(find Makefile) ]; do
+  cd ../
+done
+if [ "$PWD" == $HOME ]; then
+  echo "Could not find makefile"
+  exit 1
+fi
+echo "---------------------- Compiling ----------------------"
+make $@
+if [ $? = 0 ]; then
+  #The make was successful, so ask for run
+  echo "Do you want to run? (y/n)"
+  read line
+  if [ "$line" = "y" ]; then
+    echo "----------------------- Running -----------------------"
+    make run
+    exit 0
+  else
+    echo "Closing..."
+    exit 0
+  fi
+else
+  exit 1
+fi
