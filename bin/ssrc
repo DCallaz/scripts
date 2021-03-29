@@ -1,0 +1,17 @@
+#!/bin/bash
+LS=$(echo */)
+LSARRAY=($LS)
+while [ "${LSARRAY[0]}" != "*/" ]; do
+  if [[ "${LSARRAY[@]}" =~ "main/" ]]; then
+    cd main
+    echo "changed to main"
+  elif [[ "${LSARRAY[@]}" =~ "src/" ]]; then
+    cd src
+    echo "changed to src"
+  else
+    cd "${LSARRAY[0]}"
+    echo "changed to ${LSARRAY[0]}"
+  fi
+LS=$(echo */)
+LSARRAY=($LS)
+done
