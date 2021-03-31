@@ -4,6 +4,12 @@ export PATH="$HOME/bin:$PATH"
 export LIBS="-L/home/dfe/Archive/boost_1_44_0/stage/lib"
 export CPPFLAGS="-I/home/dfe/Archive/boost_1_44_0"
 
+#No <ctrl>-s
+if [[ -t 0 && $- = *i* ]]
+then
+      stty -ixon
+fi
+
 #My aliases
 alias c='clear'
 

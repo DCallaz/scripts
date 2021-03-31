@@ -17,6 +17,7 @@ Plug 'scrooloose/nerdtree'
 Plug 'JamshedVesuna/vim-markdown-preview'
 Plug 'dense-analysis/ale'
 Plug 'johngrib/vim-game-snake'
+Plug 'gsiano/vmux-clipboard'
 call plug#end()
 " }}}
 
@@ -60,6 +61,8 @@ noremap <Up> <NOP>
 noremap <Down> <NOP>
 noremap <Left> <NOP>
 noremap <Right> <NOP>
+nnoremap <Up> 10<C-y>
+nnoremap <Down> 10<C-e>
 nnoremap \ :noh<return>
 nnoremap <C-\> :ToggleNumber()<CR>
 nnoremap <C-l> :IndentGuidesToggle<return>
@@ -67,11 +70,24 @@ nnoremap <C-n> :NERDTreeToggle<CR>
 nnoremap <C-c> :!pdftex %<CR><CR>
 nnoremap <C-m> :!mmake<CR>
 vnoremap p	"0p
+"Tmux copy
+noremap <C-y>  y :WriteToVmuxClipboard<CR>
+noremap <C-p>  :ReadFromVmuxClipboard<CR> p
+"Open in normal
+nnoremap <leader>o  o<Esc>
+nnoremap <leader>O O<Esc>
+"Script running
+nnoremap <C-c> :!pdftex %<CR><CR>
+nnoremap <C-m> :!mmake<CR>
+vnoremap p	"0p
+"Spell check
+nnoremap <C-s>  :setlocal spell spelllang=en_us<CR>
 "space open/closes folds
 nnoremap <space> za
 nnoremap <Tab> :bnext<CR>
 nnoremap <S-Tab> :bprevious<CR>
 nnoremap <S-x> :bdelete<CR>
+"Automatic code insertions
 inoremap {<CR>	{<CR>}<Esc>O
 inoremap `sout<Tab>	System.out.println("");<Esc>2hi
 inoremap `pf<Tab>	printf("\n");<Esc>4hi
