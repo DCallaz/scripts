@@ -47,12 +47,36 @@ function! <SID>StripTrailingWhiteSpaces()
   let @/=_s
   call cursor(l, c)
 endfunction
+
+function FoldCloseAll()
+  let _s=@/
+  let l = line(".")
+  let c = col(".")
+
+  execute "normal ggzj"
+  let lprev = line(".")
+  execute "normal zj"
+  silent! foldclose
+  let lnow = line(".")
+  while lnow != lprev
+    execute "normal nj"
+    silent! foldclose
+    let lprev = lnow
+    let lnow = line(".")
+  endwhile
+  execute "normal ggzj"
+  silent! foldclose
+  
+  let @/=_s
+  call cursor(l, c)
+endfunction
 " }}}
 " COMMANDS {{{
 "show trailing white spaces by default
 :command Trail /\s\+$
 " remove all whitespaces when done
 nnoremap <silent> <F5> :call <SID>StripTrailingWhiteSpaces()<CR>
+nnoremap F :call FoldCloseAll()<CR>
 autocmd BufWritePre *.txt, *.c :call <SID>StripTrailingWhiteSpaces()
 " }}}
 
