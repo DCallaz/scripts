@@ -59,7 +59,7 @@ function FoldCloseAll()
   silent! foldclose
   let lnow = line(".")
   while lnow != lprev
-    execute "normal nj"
+    execute "normal zj"
     silent! foldclose
     let lprev = lnow
     let lnow = line(".")
