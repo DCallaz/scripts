@@ -4,4 +4,4 @@
 	name = Dylan Callaghan
 	email = 21831599@sun.ac.za
 [commit]
-	template = /home/dylan/.gitmessage
+	template = ~/.gitmessage
