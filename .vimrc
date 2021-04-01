@@ -53,6 +53,7 @@ function FoldCloseAll()
   let l = line(".")
   let c = col(".")
 
+  execute "normal zR"
   execute "normal ggzj"
   let lprev = line(".")
   execute "normal zj"
