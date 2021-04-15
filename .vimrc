@@ -71,13 +71,31 @@ function FoldCloseAll()
   let @/=_s
   call cursor(l, c)
 endfunction
+
+function Comment()
+  let l = line(".")
+  let c = col(".")
+  let line=getline('.')
+  
+  if line =~ '^\s*//'
+    "echo "Found comment"
+    execute "normal _xx"
+  call cursor(l, c-2)
+  else
+    "echo "Comment not found"
+    execute "normal _i//"
+  call cursor(l, c+2)
+  endif
+endfunction
 " }}}
 " COMMANDS {{{
 "show trailing white spaces by default
-:command Trail /\s\+$
+
 " remove all whitespaces when done
 nnoremap <silent> <F5> :call <SID>StripTrailingWhiteSpaces()<CR>
 nnoremap F :call FoldCloseAll()<CR>
+nnoremap <leader>c  :call Comment()<CR>
+vnoremap <leader>c  :call Comment()<CR>
 autocmd BufWritePre *.txt, *.c :call <SID>StripTrailingWhiteSpaces()
 " }}}
 
