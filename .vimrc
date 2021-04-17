@@ -106,6 +106,8 @@ noremap <Left> <NOP>
 noremap <Right> <NOP>
 nnoremap <Up> 10<C-y>
 nnoremap <Down> 10<C-e>
+nnoremap <Left>   1b
+nnoremap <Right>  1w
 nnoremap \ :noh<return>
 nnoremap <C-\> :ToggleNumber()<CR>
 nnoremap <C-l> :IndentGuidesToggle<return>
