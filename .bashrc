@@ -3,6 +3,10 @@ export VISUAL=vim
 export PATH="$HOME/bin:$PATH"
 export LIBS="-L/home/dfe/Archive/boost_1_44_0/stage/lib"
 export CPPFLAGS="-I/home/dfe/Archive/boost_1_44_0"
+#For ANTLR
+export CLASSPATH=".:/usr/local/lib/antlr-4.9-complete.jar:$CLASSPATH"
+alias antlr4='java -Xmx500M -cp "/usr/local/lib/antlr-4.9-complete.jar:$CLASSPATH" org.antlr.v4.Tool'
+alias grun='java -Xmx500M -cp "/usr/local/lib/antlr-4.9-complete.jar:$CLASSPATH" org.antlr.v4.gui.TestRig'
 
 #No <ctrl>-s
 if [[ -t 0 && $- = *i* ]]

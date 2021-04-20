@@ -18,6 +18,7 @@ Plug 'JamshedVesuna/vim-markdown-preview'
 Plug 'dense-analysis/ale'
 Plug 'johngrib/vim-game-snake'
 Plug 'gsiano/vmux-clipboard'
+Plug 'jrozner/vim-antlr'
 call plug#end()
 " }}}
 
