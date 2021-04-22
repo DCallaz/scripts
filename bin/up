@@ -1,0 +1,14 @@
+#!/bin/bash
+LS=$(echo $PWD)
+LSARRAY=(${LS//\// })
+i=1
+if [[ $1 != */* ]] && [[ $LS == *$1* ]]; then
+  while [ "${LSARRAY[${#LSARRAY[@]}-$i]}" != "$1" ] && [ $i != ${#LSARRAY[@]} ]; do
+    #echo ${LSARRAY[${#LSARRAY[@]}-$i]}
+    cd ../
+    i=$(($i+1))
+  done
+  exec bash
+else
+  echo "Did not find directory $1"
+fi
