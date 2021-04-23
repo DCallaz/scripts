@@ -169,6 +169,7 @@ syntax enable
 set cursorline
 set wildmenu
 set modelines=1
+set synmaxcol=100
 " }}}
 
 " air-line {{{
