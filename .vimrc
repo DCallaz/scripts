@@ -140,6 +140,9 @@ inoremap `pf<Tab>	printf("\n");<Esc>4hi
 inoremap `psvm<Tab>	public static void main(String[] args) {<CR>}<Esc>O
 inoremap `im<Tab>	int main(int argc, char[] *argv) {<CR>}<Esc>O
 inoremap `<Tab>	<C-p>
+" Remap esc
+inoremap wq <Esc>
+inoremap qw <Esc>
 " Ale commands
 " nmap <C-k> <Plug>(ale_previous_wrap)
 " nmap <C-j> <Plug>(ale_next_wrap)
