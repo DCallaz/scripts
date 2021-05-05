@@ -82,24 +82,33 @@ function Comment()
   
   if ext == "java"
     let com = "//"
+    let len = 2
   elseif ext == "c"
     let com = "//"
+    let len = 2
   elseif ext == "tex"
     let com = "%"
+    let len = 1
   elseif ext == "py"
     let com = "#"
+    let len = 1
   else
     let com = "#"
+    let len = 1
   endif
   
   if line =~ '^\s*' . com
     "echo "Found comment"
-    execute "normal _xx"
-  call cursor(l, c-2)
+    if len == 2
+      execute "normal _xx"
+    elseif len == 1
+      execute "normal _x"
+    endif
+  call cursor(l, c-len)
   else
     "echo "Comment not found"
     execute "normal _i" . com
-  call cursor(l, c+2)
+  call cursor(l, c+len)
   endif
 endfunction
 
