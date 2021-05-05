@@ -78,14 +78,27 @@ function Comment()
   let l = line(".")
   let c = col(".")
   let line=getline('.')
+  let ext = expand('%:e')
   
-  if line =~ '^\s*//'
+  if ext == "java"
+    let com = "//"
+  elseif ext == "c"
+    let com = "//"
+  elseif ext == "tex"
+    let com = "%"
+  elseif ext == "py"
+    let com = "#"
+  else
+    let com = "#"
+  endif
+  
+  if line =~ '^\s*' . com
     "echo "Found comment"
     execute "normal _xx"
   call cursor(l, c-2)
   else
     "echo "Comment not found"
-    execute "normal _i//"
+    execute "normal _i" . com
   call cursor(l, c+2)
   endif
 endfunction
