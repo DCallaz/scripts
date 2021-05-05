@@ -1,0 +1,5 @@
+#!/bin/bash
+old=$1
+file=${old[@]//\.md/}
+markdown $old > $file.html
+firefox $file.html

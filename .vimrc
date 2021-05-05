@@ -19,6 +19,7 @@ Plug 'dense-analysis/ale'
 Plug 'johngrib/vim-game-snake'
 Plug 'gsiano/vmux-clipboard'
 Plug 'jrozner/vim-antlr'
+Plug 'vim-latex/vim-latex'
 call plug#end()
 " }}}
 
@@ -88,6 +89,17 @@ function Comment()
   call cursor(l, c+2)
   endif
 endfunction
+
+function Controlc()
+  let extension = expand('%:e')
+  if extension == "md"
+    :execute "silent !mark %" | redraw!
+  elseif extension == "tex"
+    :execute "silent !pdftex %" | redraw!
+  else
+    :!mmake
+  endif
+endfunction
 " }}}
 " COMMANDS {{{
 "show trailing white spaces by default
@@ -113,8 +125,6 @@ nnoremap \ :noh<return>
 nnoremap <C-\> :ToggleNumber()<CR>
 nnoremap <C-l> :IndentGuidesToggle<return>
 nnoremap <C-n> :NERDTreeToggle<CR>
-nnoremap <C-c> :!pdftex %<CR><CR>
-nnoremap <C-m> :!mmake<CR>
 vnoremap p	"0p
 "Tmux copy
 noremap <C-y>  y :WriteToVmuxClipboard<CR>
@@ -123,8 +133,7 @@ noremap <C-p>  :ReadFromVmuxClipboard<CR> p
 nnoremap <leader>o  o<Esc>
 nnoremap <leader>O O<Esc>
 "Script running
-nnoremap <C-c> :!pdftex %<CR><CR>
-nnoremap <C-m> :!mmake<CR>
+nnoremap <C-c> :call Controlc()<CR>
 vnoremap p	"0p
 "Spell check
 nnoremap <C-s>  :setlocal spell spelllang=en_us<CR>
@@ -204,6 +213,24 @@ let g:airline_symbols.paste = 'ρ'
 let g:airline_symbols.paste = 'Þ'
 let g:airline_symbols.paste = '∥'
 let g:airline_symbols.whitespace = 'Ξ'
+" }}}
+
+
+" vim-latex {{{
+" REQUIRED. This makes vim invoke Latex-Suite when you open a tex file.
+filetype plugin on
+
+" IMPORTANT: win32 users will need to have 'shellslash' set so that latex
+" can be called correctly.
+set shellslash
+
+" OPTIONAL: This enables automatic indentation as you type.
+filetype indent on
+
+" OPTIONAL: Starting with Vim 7, the filetype of empty .tex files defaults to
+" 'plaintex' instead of 'tex', which results in vim-latex not being loaded.
+" The following changes the default filetype back to 'tex':
+let g:tex_flavor='latex'
 " }}}
 
 "vim:foldmethod=marker:foldlevel=0
