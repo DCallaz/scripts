@@ -5,3 +5,5 @@
 	email = 21831599@sun.ac.za
 [commit]
 	template = ~/.gitmessage
+[core]
+	excludesFile = ~/.gitignore
