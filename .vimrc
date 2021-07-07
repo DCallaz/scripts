@@ -20,6 +20,7 @@ Plug 'johngrib/vim-game-snake'
 Plug 'gsiano/vmux-clipboard'
 Plug 'jrozner/vim-antlr'
 Plug 'vim-latex/vim-latex'
+Plug 'mbbill/undotree'
 call plug#end()
 " }}}
 
@@ -147,6 +148,7 @@ nnoremap \ :noh<return>
 nnoremap <C-\> :ToggleNumber()<CR>
 nnoremap <C-l> :IndentGuidesToggle<return>
 nnoremap <C-n> :NERDTreeToggle<CR>
+nnoremap <C-u> :UndotreeToggle<CR>
 vnoremap p	"0p
 "Tmux copy
 noremap <C-y>  y :WriteToVmuxClipboard<CR>
@@ -154,6 +156,8 @@ noremap <C-p>  :ReadFromVmuxClipboard<CR> p
 "Open in normal
 nnoremap <leader>o  o<Esc>
 nnoremap <leader>O O<Esc>
+"Ale next
+nnoremap <leader><TAB> :ALENextWrap<CR>
 "Script running
 nnoremap <C-c> :call Controlc()<CR>
 vnoremap p	"0p
@@ -170,6 +174,7 @@ inoremap `sout<Tab>	System.out.println("");<Esc>2hi
 inoremap `pf<Tab>	printf("\n");<Esc>4hi
 inoremap `psvm<Tab>	public static void main(String[] args) {<CR>}<Esc>O
 inoremap `im<Tab>	int main(int argc, char[] *argv) {<CR>}<Esc>O
+inoremap `for for(int i = <++>; i < <++>; i++) {<CR>}<Esc>O<++><Esc>k0<C-j>
 inoremap `<Tab>	<C-p>
 " Remap esc
 inoremap wq <Esc>
@@ -182,7 +187,7 @@ inoremap qw <Esc>
 " ALL SETS {{{
 set colorcolumn=80
 set number
-set relativenumber
+"set relativenumber
 set hlsearch
 "TAB SETTINGS
 set autoindent    " Copy indent from current line when starting a new line.
