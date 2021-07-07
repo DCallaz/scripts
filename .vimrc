@@ -177,8 +177,8 @@ inoremap `im<Tab>	int main(int argc, char[] *argv) {<CR>}<Esc>O
 inoremap `for for(int i = <++>; i < <++>; i++) {<CR>}<Esc>O<++><Esc>k0<C-j>
 inoremap `<Tab>	<C-p>
 " Remap esc
-inoremap wq <Esc>
-inoremap qw <Esc>
+inoremap wq <Esc>l
+inoremap qw <Esc>l
 " Ale commands
 " nmap <C-k> <Plug>(ale_previous_wrap)
 " nmap <C-j> <Plug>(ale_next_wrap)
@@ -253,6 +253,7 @@ set shellslash
 
 " OPTIONAL: This enables automatic indentation as you type.
 filetype indent on
+set foldmethod=indent
 
 " OPTIONAL: Starting with Vim 7, the filetype of empty .tex files defaults to
 " 'plaintex' instead of 'tex', which results in vim-latex not being loaded.
