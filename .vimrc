@@ -150,6 +150,15 @@ nnoremap <C-l> :IndentGuidesToggle<return>
 nnoremap <C-n> :NERDTreeToggle<CR>
 nnoremap <C-u> :UndotreeToggle<CR>
 vnoremap p	"0p
+"Join lines
+noremap M J
+"move line up/down
+noremap K  :move -2<CR>
+noremap J  :move +1<CR>
+xnoremap K  :m-2<CR>gv=gv
+xnoremap J :m'>+<CR>gv=gv
+"Break line
+noremap B whi<CR><Esc>
 "Tmux copy
 noremap <C-y>  y :WriteToVmuxClipboard<CR>
 noremap <C-p>  :ReadFromVmuxClipboard<CR> p
