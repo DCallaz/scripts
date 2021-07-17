@@ -125,6 +125,9 @@ function Controlc()
 endfunction
 " }}}
 " COMMANDS {{{
+" Merge current changes with original file
+command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
+    \ | wincmd p | diffthis
 "show trailing white spaces by default
 
 " remove all whitespaces when done

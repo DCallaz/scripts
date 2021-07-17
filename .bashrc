@@ -1,3 +1,4 @@
+source ~/completion.bash
 export EDITOR=vim
 export VISUAL=vim
 export PATH="$HOME/bin:$PATH"

@@ -1,3 +1,4 @@
 *.swp
 bin/
 !bin/README.md
+*/target/
