@@ -93,6 +93,9 @@ function Comment()
   elseif ext == "py"
     let com = "#"
     let len = 1
+  elseif ext == "hs"
+    let com = "--"
+    let len = 2
   else
     let com = "#"
     let len = 1
