@@ -1,0 +1,52 @@
+#!/bin/bash
+#Setting the variables
+REPORT=0
+GIT=0
+MAVEN=0
+while getopts ":rgmh" opt; do
+  case $opt in
+    r)
+      REPORT=1
+      ;;
+    g)
+      GIT=1
+      ;;
+    m)
+      MAVEN=1
+      ;;
+    h)
+      echo -e "USAGE: mkproj -r -g -m -h\nWhere:\n  -r : Include report\n  -g : create corresponding git repo\n  -m : Create instead a maven project\n  -h : Print this help message"
+      exit
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      ;;
+    :)
+      echo "Option -$OPTARG requires an argument." >&2
+      exit 1
+      ;;
+  esac
+done
+shift $(($OPTIND - 1))
+if [ "$#" -lt 1 ]; then
+  echo "Too few arguements, aborting"
+  exit
+elif [ "$#" -gt 1 ]; then
+  echo "Too many arguements, ignoring some"
+fi
+NAME=$1
+#Now time to create
+if [ $MAVEN == 1 ]; then
+  mvn archetype:generate -DgroupId=za.ac.sun.$NAME -DartifactId=$NAME -DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=1.4 -DinteractiveMode=false
+  cd $NAME
+else
+  mkdir $NAME
+  cd $NAME
+  mkdir src
+  mkdir bin
+fi
+touch Makefile
+touch README.md
+if [ $REPORT == 1 ]; then
+  touch report.tex
+fi
