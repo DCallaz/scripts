@@ -70,7 +70,7 @@ function FoldCloseAll()
   endwhile
   execute "normal ggzj"
   silent! foldclose
-  
+
   let @/=_s
   call cursor(l, c)
 endfunction
@@ -80,7 +80,7 @@ function Comment()
   let c = col(".")
   let line=getline('.')
   let ext = expand('%:e')
-  
+
   if ext == "java"
     let com = "//"
     let len = 2
@@ -100,7 +100,7 @@ function Comment()
     let com = "#"
     let len = 1
   endif
-  
+
   if line =~ '^\s*' . com
     "echo "Found comment"
     if len == 2
@@ -134,11 +134,11 @@ command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
 "show trailing white spaces by default
 
 " remove all whitespaces when done
-nnoremap <silent> <F5> :call <SID>StripTrailingWhiteSpaces()<CR>
+autocmd BufWrite * :call <SID>StripTrailingWhiteSpaces()
+nnoremap  <leader>s :call <SID>StripTrailingWhiteSpaces()<CR>
 nnoremap F :call FoldCloseAll()<CR>
 nnoremap <leader>c  :call Comment()<CR>
 vnoremap <leader>c  :call Comment()<CR>
-autocmd BufWritePre *.txt, *.c :call <SID>StripTrailingWhiteSpaces()
 " }}}
 
 " KEYBINDS {{{
