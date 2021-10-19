@@ -21,6 +21,7 @@ Plug 'gsiano/vmux-clipboard'
 Plug 'jrozner/vim-antlr'
 Plug 'vim-latex/vim-latex'
 Plug 'mbbill/undotree'
+Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 call plug#end()
 " }}}
 
