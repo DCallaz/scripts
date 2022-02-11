@@ -1,7 +1,7 @@
 source ~/completion.bash
 export EDITOR=vim
 export VISUAL=vim
-export PATH="$HOME/bin:$PATH"
+export PATH="$HOME/bin:~/subjects/masters/feedback_localizer:$PATH"
 export LIBS="-L/home/dfe/Archive/boost_1_44_0/stage/lib"
 export CPPFLAGS="-I/home/dfe/Archive/boost_1_44_0"
 #For ANTLR
@@ -93,6 +93,78 @@ extract () {
 	done
 }
 
+#Finds a source code directory below the current and goes there
+src () {
+  LS=$(echo */)
+  LSARRAY=($LS)
+  while [ "${LSARRAY[0]}" != "*/" ]; do
+    if [[ "${LSARRAY[@]}" =~ "main/" ]]; then
+      cd main
+      echo "changed to main"
+    elif [[ "${LSARRAY[@]}" =~ "src/" ]]; then
+      cd src
+      echo "changed to src"
+    else
+      cd "${LSARRAY[0]}"
+      echo "changed to ${LSARRAY[0]}"
+    fi
+  LS=$(echo */)
+  LSARRAY=($LS)
+  done
+}
+
+# Goes up to the given direcotry
+up () {
+LS=$(echo $PWD)
+LSARRAY=(${LS//\// })
+i=1
+if [[ $LS == *$1/* ]]; then
+  FIND=$1
+  if [[ $1 == */* ]]; then
+    ARR=(${FIND//\// })
+    FIND=${ARR[${#ARR[@]}-1]}
+  fi
+  while [ "${LSARRAY[${#LSARRAY[@]}-$i]}" != "$FIND" ] && [ $i != ${#LSARRAY[@]} ]; do
+    #echo ${LSARRAY[${#LSARRAY[@]}-$i]}
+    cd ../
+    i=$(($i+1))
+  done
+  exec bash
+else
+  echo "Did not find directory $1"
+fi
+}
+
+up2 () {
+  local path=$PWD
+  case $1 in
+    (''|'..')
+      cd ..; return ;;
+    (.)
+      cd .; return ;;
+    (/)
+      cd /; return ;;
+    (*/*)
+      printf '"%s" %s\n' "$1" 'contains forward slashes, up will not work' >&2
+      return 1 ;;
+  esac
+  if [[ $path != /* ]]; then
+    printf '%s\n' 'PWD is not an absolute path, up will not work' >&2
+    return 1
+  fi
+  until [[ $path = / ]]; do
+    path=${path%/*}
+    path=${path:-/}
+    if [[ ${path%"$1"} != "$path" ]] && [[ -d ${path%"$1"} ]]
+    then
+      cd -- "$path"
+      return
+    fi
+  done
+  printf '%s "%s" %s\n' 'Directory' "$1" 'not found' >&2
+  return 1
+}
+
 # Goes up a specified number of directories  (i.e. up 4)
 cdup () {
 	local d=""
@@ -166,3 +238,7 @@ PERL_MM_OPT="INSTALL_BASE=/home/dylan/perl5"; export PERL_MM_OPT;
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
