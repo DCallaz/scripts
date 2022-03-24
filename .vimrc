@@ -76,6 +76,27 @@ function FoldCloseAll()
   call cursor(l, c)
 endfunction
 
+function Reorder()
+  let _s=@/
+  let l = line(".")
+  let c = col(".")
+
+  let len = strwidth(getline("."))
+  if len < 80
+    execute "normal M"
+  endif
+  let len = strwidth(getline("."))
+  while len > 80
+    execute "normal 80|"
+    execute "normal B"
+    execute "normal M"
+    let len = strwidth(getline("."))
+  endwhile
+
+  let @/=_s
+  call cursor(l, c)
+endfunction
+
 function Comment()
   let l = line(".")
   let c = col(".")
@@ -138,6 +159,7 @@ command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
 autocmd BufWrite * :call <SID>StripTrailingWhiteSpaces()
 nnoremap  <leader>s :call <SID>StripTrailingWhiteSpaces()<CR>
 nnoremap F :call FoldCloseAll()<CR>
+nnoremap R :call Reorder()<CR>
 nnoremap <leader>c  :call Comment()<CR>
 vnoremap <leader>c  :call Comment()<CR>
 " }}}
