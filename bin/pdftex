@@ -1,7 +1,14 @@
 #!/bin/bash
 old=$1
+main="$(find -name "*.latexmain" -printf "%f")"
+if [ -f "$main" ]; then
+  echo "Found mainfile: $main"
+  old="${main%.latexmain}"
+fi
 file=${old[@]//\.tex/}
-pdflatex $file.tex
-pdflatex $file.tex
-ls $file.* | grep -P $file'\.(?!tex|pdf)' | xargs rm
+pdflatex $file
+bibtex $file
+pdflatex $file
+pdflatex $file
+ls $file.* | grep -P $file'\.(?!tex|pdf|bib)' | xargs rm
 evince $file.pdf &

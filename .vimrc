@@ -152,9 +152,8 @@ nnoremap <Down> 10<C-e>
 nnoremap <Left>   1b
 nnoremap <Right>  1w
 nnoremap \ :noh<return>
-nnoremap <C-\> :ToggleNumber()<CR>
 nnoremap <C-l> :IndentGuidesToggle<return>
-nnoremap <C-n> :NERDTreeToggle<CR>
+nnoremap <C-\> :NERDTreeToggle<CR>
 nnoremap <C-u> :UndotreeToggle<CR>
 vnoremap p	"0p
 "Join lines
