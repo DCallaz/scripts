@@ -89,6 +89,9 @@ function Reorder()
   while len > 80
     execute "normal 80|"
     execute "normal B"
+    if getline(line(".")+1) =~ '^\s*$'
+      break
+    endif
     execute "normal M"
     let len = strwidth(getline("."))
   endwhile
@@ -186,7 +189,7 @@ noremap J  :move +1<CR>
 xnoremap K  :m-2<CR>gv=gv
 xnoremap J :m'>+<CR>gv=gv
 "Break line
-noremap B whi<CR><Esc>
+noremap B eli<CR><Esc>
 "Tmux copy
 noremap <C-y>  y :WriteToVmuxClipboard<CR>
 noremap <C-p>  :ReadFromVmuxClipboard<CR> p
