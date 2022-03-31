@@ -88,7 +88,10 @@ function Reorder()
   let len = strwidth(getline("."))
   while len > 80
     execute "normal 80|"
-    execute "normal B"
+    if (Break() == 0)
+      call search("\\s", 'b', line("."))
+      call Break()
+    endif
     if getline(line(".")+1) =~ '^\s*$'
       break
     endif
@@ -98,6 +101,18 @@ function Reorder()
 
   let @/=_s
   call cursor(l, c)
+endfunction
+
+function Break()
+  let char = strcharpart(getline('.')[col('.') - 1:], 0, 1)
+  let line = line(".")
+  if !(char =~ '\s')
+    if !(search("\\s", '', line))
+      return 0
+    endif
+  endif
+  execute "normal i\<CR>\<Esc>"
+  return 1
 endfunction
 
 function Comment()
@@ -189,7 +204,7 @@ noremap J  :move +1<CR>
 xnoremap K  :m-2<CR>gv=gv
 xnoremap J :m'>+<CR>gv=gv
 "Break line
-noremap B eli<CR><Esc>
+noremap B :call Break()<CR>
 "Tmux copy
 noremap <C-y>  y :WriteToVmuxClipboard<CR>
 noremap <C-p>  :ReadFromVmuxClipboard<CR> p
@@ -299,6 +314,7 @@ set foldmethod=indent
 " 'plaintex' instead of 'tex', which results in vim-latex not being loaded.
 " The following changes the default filetype back to 'tex':
 let g:tex_flavor='latex'
+let g:Tex_FoldedEnvironments = 'verbatim,comment,eq,gather,align,figure,table,lstlisting,algorithm,algorithmic,enumerate,itemize,thebibliography,keywords,abstract,titlepage'
 " }}}
 
 "vim:foldmethod=marker:foldlevel=0
