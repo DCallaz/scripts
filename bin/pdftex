@@ -6,9 +6,15 @@ if [ -f "$main" ]; then
   old="${main%.latexmain}"
 fi
 file=${old[@]//\.tex/}
-pdflatex $file
-bibtex $file
-pdflatex $file
-pdflatex $file
+color=`tput setaf 2;`
+reset=`tput sgr0`
+echo "${color}Step 1/4: running pdflatex${reset}"
+texfot --ignore="Warning: (Citation|Reference)" pdflatex -interaction=nonstopmode $file
+echo "${color}Step 2/4: running bibtex${reset}"
+texfot bibtex $file
+echo "${color}Step 3/4: running pdflatex${reset}"
+texfot --ignore="Warning: Citation" pdflatex -interaction=nonstopmode $file
+echo "${color}Step 4/4: running pdflatex${reset}"
+texfot pdflatex -interaction=nonstopmode $file
 ls $file.* | grep -P $file'\.(?!tex|pdf|bib)' | xargs rm
 evince $file.pdf &
