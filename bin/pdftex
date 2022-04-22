@@ -1,4 +1,5 @@
 #!/bin/bash
+shopt -s expand_aliases
 old=$1
 main="$(find -name "*.latexmain" -printf "%f")"
 if [ -f "$main" ]; then
@@ -6,15 +7,18 @@ if [ -f "$main" ]; then
   old="${main%.latexmain}"
 fi
 file=${old[@]//\.tex/}
-color=`tput setaf 2;`
+green=`tput setaf 2;`
+warn=`tput setaf 3`
+err=`tput setaf 1`
 reset=`tput sgr0`
-echo "${color}Step 1/4: running pdflatex${reset}"
-texfot --ignore="Warning: (Citation|Reference)" pdflatex -interaction=nonstopmode $file
-echo "${color}Step 2/4: running bibtex${reset}"
-texfot bibtex $file
-echo "${color}Step 3/4: running pdflatex${reset}"
-texfot --ignore="Warning: Citation" pdflatex -interaction=nonstopmode $file
-echo "${color}Step 4/4: running pdflatex${reset}"
-texfot pdflatex -interaction=nonstopmode $file
+alias color='sed "s/.*\(W\|w\)arning.*/${warn}&${reset}/" | sed "s/\!.*\|.*\(e\|E\)rror.*/${err}&${reset}/"'
+echo "${green}Step 1/4: running pdflatex${reset}"
+texfot --ignore="Warning: (Citation|Reference)" pdflatex -interaction=nonstopmode $file | color
+echo "${green}Step 2/4: running bibtex${reset}"
+texfot bibtex $file | color
+echo "${green}Step 3/4: running pdflatex${reset}"
+texfot --ignore="Warning: Citation" pdflatex -interaction=nonstopmode $file | color
+echo "${green}Step 4/4: running pdflatex${reset}"
+texfot pdflatex -interaction=nonstopmode $file | color
 ls $file.* | grep -P $file'\.(?!tex|pdf|bib)' | xargs rm
 evince $file.pdf &
