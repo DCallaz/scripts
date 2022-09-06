@@ -4,6 +4,38 @@ command -v tmux >/dev/null 2>&1 || { printf "Cockpit requires tmux but it is not
 Please check http://cockpit.27ae60.com/help.html for more information.
 Aborting." >&2; exit 1; }
 
+# Proccess cmd line options
+while getopts ":hf:" opt; do
+  case ${opt} in
+    h )
+      echo "Usage: tmx [-h] [-f format] [name]"
+      echo "where options include:"
+      echo "  -h"
+      echo "    Display this message"
+      echo "  -f format"
+      echo "    Format the new tmux session using the format string given"
+      echo "    where <format> = \"{[<op>[<ctrl>]][{<cmd>}]}\""
+      echo "      <op>:   One of \"|\" or \"_\". Splits the pane"
+      echo "              horizontally or vertically respectively"
+      echo "      <ctrl>: One of \"^v><\", moves the current pane"
+      echo "              to the pane above, below, left or right."
+      echo "      <cmd>:  Executes <cmd> in the current pane."
+      exit 0
+      ;;
+    f )
+      format=$OPTARG
+      ;;
+    \? )
+      echo "Invalid option: $OPTARG" 1>&2
+      ;;
+    : )
+      echo "Invalid option: $OPTARG requires an argument" 1>&2
+      ;;
+  esac
+done
+shift $((OPTIND -1))
+
+# name the workspace
 SESSION="Workspace"
 if [ $# = 0 ]; then
 	echo "No session name given, using \"Workspace\""
@@ -15,7 +47,7 @@ fi
 tmux has-session -t $SESSION > /dev/null 2>&1
 if [ $? -eq 0 ]; then
   echo "Session $SESSION already exists. Attaching."
-  sleep 1
+  sleep 0.1
   sett $SESSION
   tmux -2 attach -t $SESSION
   exit 0;
@@ -32,14 +64,56 @@ tmux set-window-option -g pane-base-index 1
 
 # Now populate the session with the windows you use every day
 tmux new-window -t $SESSION:0 -k -n Untitled-window
-tmux split-window -h -p 50
-tmux select-pane -t 2
-tmux split-window -v -p 50
-tmux send-keys -t ${window}.1 'src;. ~/completion.bash;vim .' Enter
-tmux send-keys -t ${window}.2
-tmux send-keys -t ${window}.3
-tmux set-window-option -t $SESSION:0 automatic-rename off
+if [ -z "$format" ]; then
+  tmux split-window -h -p 50
+  tmux select-pane -t 2
+  tmux split-window -v -p 50
+  tmux send-keys -t ${window}.1 'src;. ~/completion.bash;vim .' Enter
+  tmux send-keys -t ${window}.2
+  tmux send-keys -t ${window}.3
+else
+  i=0
+  size=${#format}
+  while [ $i -lt $size ]; do
+    case ${format:$i:1} in
+      \| )
+        tmux split-window -h -p 50
+        ;;
+      _ )
+        tmux split-window -v -p 50
+        ;;
+      ^ )
+        tmux select-pane -U
+        ;;
+      v )
+        tmux select-pane -D
+        ;;
+      \> )
+        tmux select-pane -R
+        ;;
+      \< )
+        tmux select-pane -L
+        ;;
+      { )
+        s=$(expr $i + 1)
+        i=$(expr $i + 1)
+        while [ "${format:$i:1}" != "}" ]; do
+          i=$(expr $i + 1)
+        done
+        len=$(expr $i - $s)
+        com=${format:$s:$len}
+        echo "command: \"$com\""
+        tmux send-keys "$com" Enter
+        ;;
+      * )
+        echo "Could not parse ${format:$i:1}"
+        ;;
+    esac
+    i=$(expr $i + 1)
+  done
+fi
 
 # all done. select starting window and get to work
+tmux set-window-option -t $SESSION:0 automatic-rename off
 tmux select-window -t $SESSION:0
 tmux -2 attach -t $SESSION

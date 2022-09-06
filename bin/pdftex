@@ -13,12 +13,29 @@ err=`tput setaf 1`
 reset=`tput sgr0`
 alias color='sed "s/.*\(W\|w\)arning.*/${warn}&${reset}/" | sed "s/\!.*\|.*\(e\|E\)rror.*/${err}&${reset}/"'
 echo "${green}Step 1/4: running pdflatex${reset}"
-texfot --ignore="Warning: (Citation|Reference)" pdflatex -interaction=nonstopmode $file | color
+save=$(texfot --ignore="Warning: (Citation|Reference)" pdflatex -interaction=nonstopmode $file)
+echo $?
+if [ $? != 0 ]; then
+  echo "$save" | color
+  ls $file.* | grep -P $file'\.(?!tex|pdf|bib)' | xargs rm
+  exit 1
+fi
 echo "${green}Step 2/4: running bibtex${reset}"
 texfot bibtex $file | color
 echo "${green}Step 3/4: running pdflatex${reset}"
-texfot --ignore="Warning: Citation" pdflatex -interaction=nonstopmode $file | color
+save=$(texfot --ignore="Warning: Citation" pdflatex -interaction=nonstopmode $file)
+if [ $? != 0 ]; then
+  echo "$save" | color
+  ls $file.* | grep -P $file'\.(?!tex|pdf|bib)' | xargs rm
+  exit 1
+fi
 echo "${green}Step 4/4: running pdflatex${reset}"
-texfot pdflatex -interaction=nonstopmode $file | color
+save=$(texfot pdflatex -interaction=nonstopmode $file)
+if [ $? != 0 ]; then
+  echo "$save" | color
+  ls $file.* | grep -P $file'\.(?!tex|pdf|bib)' | xargs rm
+  exit 1
+fi
+echo "$save" | color
 ls $file.* | grep -P $file'\.(?!tex|pdf|bib)' | xargs rm
 evince $file.pdf &
