@@ -53,6 +53,20 @@ if [ $? -eq 0 ]; then
   exit 0;
 fi
 
+if [ "$format" == "" ]; then
+  IFS="\n"
+  for line in $(cat ~/bin/.tmux.formats); do
+    name="${line%%::*}"
+    form="${line##*::}"
+    if [ "$SESSION" == "$name" ]; then
+      format="$form"
+      echo "Retrived format specified for \"$name\""
+      break
+    fi
+  done
+  unset IFS
+fi
+
 # create a new session, named $SESSION, and detach from it
 tmux -2 new-session -n $SESSION -d -s $SESSION
 

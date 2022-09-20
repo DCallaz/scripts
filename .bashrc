@@ -1,7 +1,14 @@
 source ~/completion.bash
 export EDITOR=vim
 export VISUAL=vim
-export PATH="$HOME/bin:~/subjects/masters/feedback_localizer:$PATH"
+export JAVA_HOME="/usr/lib/jvm/default-java"
+export D4J_HOME="~/subjects/masters/Defects4J-multifault/docker/resources/defects4j"
+export COVERAGE_DIR="~/subjects/masters/Defects4J-multifault/docker/resources/fault_data"
+export TMP_DIR="../tmp"
+export RANGE_ANALYZER=~/subjects/masters/Defects4J-multifault/docker/resources/java_analyzer/target/java-analyzer-1.0-SNAPSHOT-shaded.jar
+export PATH="${PATH}:${D4J_HOME}/framework/bin"
+export FLITSR_HOME="$HOME/subjects/masters/flitsr"
+export PATH="$HOME/bin:$FLITSR_HOME:$PATH"
 export LIBS="-L/home/dfe/Archive/boost_1_44_0/stage/lib"
 export CPPFLAGS="-I/home/dfe/Archive/boost_1_44_0"
 #For ANTLR
@@ -93,6 +100,19 @@ extract () {
 	done
 }
 
+#Adds a given tmx format to the list of known formats
+addTmxFormat () {
+  if [ "$#" == "2" ]; then
+    if [ "$(grep "^$1" ~/bin/.tmux.formats)" != "" ]; then
+      sed -i "s/^$1::.*/$1::$2/" ~/bin/.tmux.formats
+    else
+      echo "$1::$2" >> ~/bin/.tmux.formats
+    fi
+  else
+    printf "USAGE: addTmxFormat <name> <format string>\n"
+  fi 
+}
+
 #Finds a source code directory below the current and goes there
 src () {
   LS=$(echo */)
@@ -115,24 +135,24 @@ src () {
 
 # Goes up to the given direcotry
 up () {
-LS=$(echo $PWD)
-LSARRAY=(${LS//\// })
-i=1
-if [[ $LS == *$1/* ]]; then
-  FIND=$1
-  if [[ $1 == */* ]]; then
-    ARR=(${FIND//\// })
-    FIND=${ARR[${#ARR[@]}-1]}
+  LS=$(echo $PWD)
+  LSARRAY=(${LS//\// })
+  i=1
+  if [[ $LS == *$1/* ]]; then
+    FIND=$1
+    if [[ $1 == */* ]]; then
+      ARR=(${FIND//\// })
+      FIND=${ARR[${#ARR[@]}-1]}
+    fi
+    while [ "${LSARRAY[${#LSARRAY[@]}-$i]}" != "$FIND" ] && [ $i != ${#LSARRAY[@]} ]; do
+      #echo ${LSARRAY[${#LSARRAY[@]}-$i]}
+      cd ../
+      i=$(($i+1))
+    done
+    exec bash
+  else
+    echo "Did not find directory $1"
   fi
-  while [ "${LSARRAY[${#LSARRAY[@]}-$i]}" != "$FIND" ] && [ $i != ${#LSARRAY[@]} ]; do
-    #echo ${LSARRAY[${#LSARRAY[@]}-$i]}
-    cd ../
-    i=$(($i+1))
-  done
-  exec bash
-else
-  echo "Did not find directory $1"
-fi
 }
 
 up2 () {
