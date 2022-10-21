@@ -10,7 +10,7 @@ complete -F _up up
 _tmx () {
   local cur=${COMP_WORDS[COMP_CWORD]}
   local TMUX_ACTIVE=$(tmux ls -F#{session_name} 2>&1)
-  if [[ "$TMUX_ACTIVE" == *"no server running"* ]]; then
+  if [[ "$TMUX_ACTIVE" == *"no server running"* ]] || [[ "$TMUX_ACTIVE" == *"error connecting to"* ]]; then
     TMUX_ACTIVE=""
   fi
   local TMUX_SAVED=$(cat ~/bin/.tmux.formats | sed 's/::.*//')

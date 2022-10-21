@@ -14,7 +14,6 @@ reset=`tput sgr0`
 alias color='sed "s/.*\(W\|w\)arning.*/${warn}&${reset}/" | sed "s/\!.*\|.*\(e\|E\)rror.*/${err}&${reset}/"'
 echo "${green}Step 1/4: running pdflatex${reset}"
 save=$(texfot --ignore="Warning: (Citation|Reference)" pdflatex -interaction=nonstopmode $file)
-echo $?
 if [ $? != 0 ]; then
   echo "$save" | color
   ls $file.* | grep -P $file'\.(?!tex|pdf|bib)' | xargs rm
