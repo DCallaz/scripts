@@ -54,7 +54,7 @@ if [ $? -eq 0 ]; then
 fi
 
 if [ "$format" == "" ]; then
-  IFS="\n"
+  IFS=$'\n'
   for line in $(cat ~/bin/.tmux.formats); do
     name="${line%%::*}"
     form="${line##*::}"
@@ -116,7 +116,7 @@ else
         done
         len=$(expr $i - $s)
         com=${format:$s:$len}
-        echo "command: \"$com\""
+        #echo "command: \"$com\""
         tmux send-keys "$com" Enter
         ;;
       * )

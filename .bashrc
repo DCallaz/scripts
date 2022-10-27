@@ -104,13 +104,18 @@ extract () {
 addTmxFormat () {
   if [ "$#" == "2" ]; then
     if [ "$(grep "^$1" ~/bin/.tmux.formats)" != "" ]; then
+      echo "Updating format for \"$1\""
       sed -i "s/^$1::.*/$1::$2/" ~/bin/.tmux.formats
     else
+      echo "Adding format for \"$1\""
       echo "$1::$2" >> ~/bin/.tmux.formats
     fi
+  elif [ "$#" == "1" ]; then
+      echo "Deleting format for \"$1\""
+      sed -i "/^$1::.*/d" ~/bin/.tmux.formats
   else
     printf "USAGE: addTmxFormat <name> <format string>\n"
-  fi 
+  fi
 }
 
 #Finds a source code directory below the current and goes there
