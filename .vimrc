@@ -21,6 +21,7 @@ Plug 'gsiano/vmux-clipboard'
 Plug 'jrozner/vim-antlr'
 Plug 'vim-latex/vim-latex'
 Plug 'mbbill/undotree'
+Plug 'vim-scripts/javacomplete'
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 call plug#end()
 " }}}
@@ -168,6 +169,23 @@ function Controlc()
     :!mmake
   endif
 endfunction
+
+filetype plugin on
+set omnifunc=syntaxcomplete#Complete
+autocmd Filetype java setlocal omnifunc=javacomplete#Complete
+set completeopt+=menu,menuone,popup
+
+"function! OpenCompletion()
+"    if !pumvisible() && ((v:char >= 'a' && v:char <= 'z') || (v:char >= 'A' && v:char <= 'Z'))
+"        call feedkeys("\<C-x>\<C-o>", "n")
+"    endif
+"endfunction
+
+"autocmd InsertCharPre * call OpenCompletion()
+
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<C-x>\<C-o>\<C-p>"
+
 " }}}
 " COMMANDS {{{
 " Merge current changes with original file
@@ -219,7 +237,7 @@ nnoremap <leader><TAB> :ALENextWrap<CR>
 nnoremap <C-c> :call Controlc()<CR>
 vnoremap p	"0p
 "Spell check
-nnoremap <C-s>  :setlocal spell spelllang=en_us<CR>
+nnoremap <C-s>  :setlocal spell spelllang=en_gb<CR>
 "space open/closes folds
 nnoremap <space> za
 nnoremap <Tab> :bnext<CR>
@@ -285,9 +303,9 @@ if !exists('g:airline_symbols')
 endif
 
 " unicode symbols
-"let g:airline_left_sep = '»'
+let g:airline_left_sep = '»'
 "let g:airline_left_sep = '▶'
-"let g:airline_right_sep = '«'
+let g:airline_right_sep = '«'
 "let g:airline_right_sep = '◀'
 let g:airline_symbols.linenr = '␊'
 let g:airline_symbols.linenr = '␤'
