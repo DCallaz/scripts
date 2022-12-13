@@ -81,6 +81,7 @@ function Reorder()
   let l = line(".")
   let c = col(".")
 
+  call <SID>StripTrailingWhiteSpaces()
   let len = strwidth(getline("."))
   if len < 80
     execute "normal M"
@@ -95,6 +96,7 @@ function Reorder()
     if getline(line(".")+1) =~ '^\s*$'
       break
     endif
+    call <SID>StripTrailingWhiteSpaces()
     execute "normal M"
     let len = strwidth(getline("."))
   endwhile
