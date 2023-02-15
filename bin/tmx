@@ -78,14 +78,7 @@ tmux set-window-option -g pane-base-index 1
 
 # Now populate the session with the windows you use every day
 tmux new-window -t $SESSION:0 -k -n Untitled-window
-if [ -z "$format" ]; then
-  tmux split-window -h -p 50
-  tmux select-pane -t 2
-  tmux split-window -v -p 50
-  tmux send-keys -t ${window}.1 'src;. ~/completion.bash;vim .' Enter
-  tmux send-keys -t ${window}.2
-  tmux send-keys -t ${window}.3
-else
+if [ ! -z "$format" ]; then
   i=0
   size=${#format}
   while [ $i -lt $size ]; do
