@@ -2,7 +2,8 @@ source ~/completion.bash
 export EDITOR=vim
 export VISUAL=vim
 export JAVA_HOME="/usr/lib/jvm/default-java"
-export D4J_HOME="~/subjects/masters/Defects4J-multifault/docker/resources/defects4j"
+export D4J_HOME="/home/21831599/data/masters/defects4j/"
+export FAULT_DIR="~/data/masters/Defects4j-multifault/fault_data"
 export COVERAGE_DIR="~/subjects/masters/Defects4J-multifault/docker/resources/fault_data"
 export TMP_DIR="../tmp"
 export RANGE_ANALYZER=~/subjects/masters/Defects4J-multifault/docker/resources/java_analyzer/target/java-analyzer-1.0-SNAPSHOT-shaded.jar
@@ -15,6 +16,7 @@ export CPPFLAGS="-I/home/dfe/Archive/boost_1_44_0"
 export CLASSPATH=".:/usr/local/lib/antlr-4.9-complete.jar:$CLASSPATH"
 alias antlr4='java -Xmx500M -cp "/usr/local/lib/antlr-4.9-complete.jar:$CLASSPATH" org.antlr.v4.Tool'
 alias grun='java -Xmx500M -cp "/usr/local/lib/antlr-4.9-complete.jar:$CLASSPATH" org.antlr.v4.gui.TestRig'
+alias mnemo='ssh 21831599@su@mnemo.cs.sun.ac.za'
 
 #No <ctrl>-s
 if [[ -t 0 && $- = *i* ]]
@@ -101,20 +103,29 @@ extract () {
 }
 
 #Adds a given tmx format to the list of known formats
-addTmxFormat () {
-  if [ "$#" == "2" ]; then
+updateTmxFormat () {
+  if [ $# -ge 2 ]; then
+    # add start dir to the end if needed
+    dir=""
+    if [ $# == 3 ]; then
+      dir="::$(readlink -f "$(echo ${3/"~"/~})")"
+    fi
+    # Add format and dir to the formats file, or update if it exists
     if [ "$(grep "^$1" ~/bin/.tmux.formats)" != "" ]; then
       echo "Updating format for \"$1\""
-      sed -i "s/^$1::.*/$1::$2/" ~/bin/.tmux.formats
+      sed -i "s#^$1::.*#$1::$2$dir#" ~/bin/.tmux.formats
     else
       echo "Adding format for \"$1\""
-      echo "$1::$2" >> ~/bin/.tmux.formats
+      echo "$1::$2$dir" >> ~/bin/.tmux.formats
     fi
   elif [ "$#" == "1" ]; then
       echo "Deleting format for \"$1\""
       sed -i "/^$1::.*/d" ~/bin/.tmux.formats
   else
-    printf "USAGE: addTmxFormat <name> <format string>\n"
+    echo "USAGE: updateTmxFormat <name> [<format string> [<start dir>]]"
+    echo "  where giving just a name will attempt to delete that file and:"
+    echo "   <format string>: a string describing the format for the tmux session"
+    echo "   <start dir>: the path (relative or absolute) of the directory to start in"
   fi
 }
 

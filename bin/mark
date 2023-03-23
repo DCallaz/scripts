@@ -1,5 +1,13 @@
 #!/bin/bash
 old=$1
+server=0
+if [ "$2" == "--server" ]; then
+  server=1
+fi
 file=${old[@]//\.md/}
-grip -b --export $old
-firefox $file.html
+if [ $server == 1 ]; then
+  grip -b $old
+else
+  grip -b --export $old
+  firefox $file.html
+fi
