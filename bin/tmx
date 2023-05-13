@@ -20,7 +20,7 @@ while getopts ":hf:d:" opt; do
       echo "      <ctrl>: One of \"^v><\", moves the current pane"
       echo "              to the pane above, below, left or right."
       echo "      <cmd>:  Executes <cmd> in the current pane."
-      echo "  -f format"
+      echo "  -d start-dir"
       echo "    Start the new tmux session at the given start directory path"
       exit 0
       ;;

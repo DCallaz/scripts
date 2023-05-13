@@ -81,10 +81,17 @@ function Reorder()
   let _s=@/
   let l = line(".")
   let c = col(".")
+  " Get the comment string
+  let comment = split(&commentstring, '%s')
+  if len(comment) > 0
+    let com = trim(comment[0])
+  else
+    let com = "#"
+  endif
 
   call <SID>StripTrailingWhiteSpaces()
   let len = strwidth(getline("."))
-  if len < 80
+  if len < 80 && getline(line(".")+1) !~ '^\s*$\|^\s*'.com
     execute "normal M"
   endif
   let len = strwidth(getline("."))
@@ -94,7 +101,8 @@ function Reorder()
       call search("\\s", 'b', line("."))
       call Break()
     endif
-    if getline(line(".")+1) =~ '^\s*$'
+
+    if getline(line(".")+1) =~ '^\s*$\|^\s*'.com
       break
     endif
     call <SID>StripTrailingWhiteSpaces()
@@ -124,25 +132,13 @@ function Comment()
   let line=getline('.')
   let ext = expand('%:e')
 
-  if ext == "java"
-    let com = "//"
-    let len = 2
-  elseif ext == "c"
-    let com = "//"
-    let len = 2
-  elseif ext == "tex"
-    let com = "%"
-    let len = 1
-  elseif ext == "py"
-    let com = "#"
-    let len = 1
-  elseif ext == "hs"
-    let com = "--"
-    let len = 2
+  let comment = split(&commentstring, '%s')
+  if len(comment) > 0
+    let com = trim(comment[0])
   else
     let com = "#"
-    let len = 1
   endif
+  let len = strlen(com)
 
   if line =~ '^\s*' . com
     "echo "Found comment"
