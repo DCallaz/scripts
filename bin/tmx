@@ -60,6 +60,9 @@ fi
 
 if [ "$format" == "" ]; then
   IFS=$'\n'
+  if [ ! -f ~/bin/.tmux.formats ]; then
+    touch ~/bin/.tmux.formats
+  fi
   for line in $(cat ~/bin/.tmux.formats); do
     name=$(echo "$line" | awk -F "::" '{print $1}')
     form=$(echo "$line" | awk -F "::" '{print $2}')
