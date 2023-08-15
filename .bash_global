@@ -1,22 +1,9 @@
+#!/bin/bash
 source ~/completion.bash
 export EDITOR=vim
 export VISUAL=vim
 export JAVA_HOME="/usr/lib/jvm/default-java"
-export D4J_HOME="/home/21831599/data/masters/defects4j/"
-export FAULT_DIR="~/data/masters/Defects4j-multifault/fault_data"
-export COVERAGE_DIR="~/subjects/masters/Defects4J-multifault/docker/resources/fault_data"
-export TMP_DIR="../tmp"
-export RANGE_ANALYZER=~/subjects/masters/Defects4J-multifault/docker/resources/java_analyzer/target/java-analyzer-1.0-SNAPSHOT-shaded.jar
-export PATH="${PATH}:${D4J_HOME}/framework/bin"
-export FLITSR_HOME="$HOME/subjects/masters/flitsr"
-export PATH="$HOME/bin:$FLITSR_HOME:$PATH"
-export LIBS="-L/home/dfe/Archive/boost_1_44_0/stage/lib"
-export CPPFLAGS="-I/home/dfe/Archive/boost_1_44_0"
-#For ANTLR
-export CLASSPATH=".:/usr/local/lib/antlr-4.9-complete.jar:$CLASSPATH"
-alias antlr4='java -Xmx500M -cp "/usr/local/lib/antlr-4.9-complete.jar:$CLASSPATH" org.antlr.v4.Tool'
-alias grun='java -Xmx500M -cp "/usr/local/lib/antlr-4.9-complete.jar:$CLASSPATH" org.antlr.v4.gui.TestRig'
-alias mnemo='ssh 21831599@su@mnemo.cs.sun.ac.za'
+export PATH="$HOME/bin:$PATH"
 
 #No <ctrl>-s
 if [[ -t 0 && $- = *i* ]]
@@ -40,14 +27,11 @@ alias gpl='git pull'
 alias gps='git push'
 alias gs='git status'
 alias gk='gitk'
-alias img='cacaview '
-alias ebrc='vim ~/.bashrc'
-alias gucci='cc -Wall -ansi -pedantic -o'
-alias updots='~/repos/.dotfilesMinimal/update.sh'
-alias vid='vim ~/'
+alias brc='vim ~/.bashrc'
+alias vrc='vim ~/.vimrc'
 # Search files in the current folder
 alias f="find . | grep "
-alias ascii="xdg-open ~/.ascii.gif"
+#alias ascii="xdg-open ~/.ascii.gif"
 
 #grep stuff
 export GREP_OPTIONS='--color=auto'
@@ -94,10 +78,11 @@ extract () {
 				*.zip)       unzip $archive       ;;
 				*.Z)         uncompress $archive  ;;
 				*.7z)        7z x $archive        ;;
-				*)           echo "don't know how to extract '$archive'..." ;;
+				*)           echo "Don't know how to extract '$archive'..."; exit 22;;
 			esac
 		else
 			echo "'$archive' is not a valid file!"
+      exit 2
 		fi
 	done
 }
