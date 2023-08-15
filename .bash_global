@@ -135,7 +135,7 @@ src () {
 }
 
 # Goes up to the given direcotry
-up () {
+up_old () {
   LS=$(echo $PWD)
   LSARRAY=(${LS//\// })
   i=1
@@ -156,7 +156,8 @@ up () {
   fi
 }
 
-up2 () {
+# Goes up to the given direcotry
+up () {
   local path=$PWD
   case $1 in
     (''|'..')
