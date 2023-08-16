@@ -20,7 +20,11 @@ if [ $? != 0 ]; then
   exit 1
 fi
 echo "${green}Step 2/4: running bibtex${reset}"
-texfot bibtex $file | color
+if [ "$(echo "$save" | grep "[b\|B]iber")" ] && [ "$(biber --version)" ]; then
+  texfot biber $file | color
+else
+  texfot bibtex $file | color
+fi
 echo "${green}Step 3/4: running pdflatex${reset}"
 save=$(texfot --ignore="Warning: Citation" pdflatex -interaction=nonstopmode $file)
 if [ $? != 0 ]; then
