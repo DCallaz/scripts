@@ -22,7 +22,7 @@ if [ -f ~/.bashrc ]; then
   fi
 else
     # Create new file
-    echo "# Include global settings\nsource ~/.bash_global\n" > ~/.bashrc
+    echo -e "# Include global settings\nsource ~/.bash_global\n" > ~/.bashrc
 fi
 # Set up vim plug and load all plugins
 curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
