@@ -6,6 +6,7 @@ set timeoutlen=500
 
 " vim-plug {{{
 call plug#begin('~/.vim/plugged')
+Plug 'ryanpcmcquen/fix-vim-pasting'
 Plug 'morhetz/gruvbox'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -16,6 +17,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'scrooloose/nerdtree'
 Plug 'JamshedVesuna/vim-markdown-preview'
 Plug 'dense-analysis/ale'
+"Plug 'psf/black'
 Plug 'johngrib/vim-game-snake'
 Plug 'gsiano/vmux-clipboard'
 Plug 'jrozner/vim-antlr'
@@ -165,6 +167,30 @@ function Controlc()
     :!mmake
   endif
 endfunction
+
+" Enable vim paste mode whenever pasting
+"function! WrapForTmux(s)
+"  if !exists('$TMUX')
+"    return a:s
+"  endif
+"
+"  let tmux_start = "\<Esc>Ptmux;"
+"  let tmux_end = "\<Esc>\\"
+"
+"  return tmux_start . substitute(a:s, "\<Esc>", "\<Esc>\<Esc>", 'g') . tmux_end
+"endfunction
+"
+"let &t_SI .= WrapForTmux("\<Esc>[?2004h")
+"let &t_EI .= WrapForTmux("\<Esc>[?2004l")
+"
+"function! XTermPasteBegin()
+"  set pastetoggle=<Esc>[201~
+"  set paste
+"  return ""
+"endfunction
+"
+"inoremap <special> <expr> <Esc>[200~ XTermPasteBegin()
+" end
 
 filetype plugin on
 set omnifunc=syntaxcomplete#Complete
@@ -334,3 +360,7 @@ let g:Tex_FoldedEnvironments = 'verbatim,comment,eq,gather,align,figure,table,ls
 " }}}
 
 "vim:foldmethod=marker:foldlevel=0
+
+" Python black plugin for ale
+"let g:ale_fixers = {}
+"let g:ale_fixers.python = ['black']
