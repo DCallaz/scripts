@@ -6,6 +6,7 @@ set timeoutlen=500
 
 " vim-plug {{{
 call plug#begin('~/.vim/plugged')
+Plug 'valloric/youcompleteme'
 Plug 'ryanpcmcquen/fix-vim-pasting'
 Plug 'morhetz/gruvbox'
 Plug 'vim-airline/vim-airline'
@@ -17,7 +18,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'scrooloose/nerdtree'
 Plug 'JamshedVesuna/vim-markdown-preview'
 Plug 'dense-analysis/ale'
-"Plug 'psf/black'
+Plug 'psf/black'
 Plug 'johngrib/vim-game-snake'
 Plug 'gsiano/vmux-clipboard'
 Plug 'jrozner/vim-antlr'
@@ -250,6 +251,9 @@ noremap B :call Break()<CR>
 "Tmux copy
 noremap <C-y>  y :WriteToVmuxClipboard<CR>
 noremap <C-p>  :ReadFromVmuxClipboard<CR> p
+"youcompleteme commands
+noremap <leader>g :YcmCompleter GoTo<CR>
+nmap <C-q> <plug>(YCMHover)
 "Open in normal
 nnoremap <leader>o  o<Esc>
 nnoremap <leader>O O<Esc>
@@ -362,5 +366,5 @@ let g:Tex_FoldedEnvironments = 'verbatim,comment,eq,gather,align,figure,table,ls
 "vim:foldmethod=marker:foldlevel=0
 
 " Python black plugin for ale
-"let g:ale_fixers = {}
-"let g:ale_fixers.python = ['black']
+let g:ale_fixers = {}
+let g:ale_fixers.python = ['black']
