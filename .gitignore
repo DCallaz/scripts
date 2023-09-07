@@ -2,5 +2,5 @@
 bin/
 !bin/README.md
 */target/
-*/__pycache__/
-*/.mypy_cache/
+**/__pycache__/*
+**/.mypy_cache/*
