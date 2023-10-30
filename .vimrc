@@ -150,11 +150,11 @@ function Comment()
     elseif len == 1
       execute "normal _x"
     endif
-  call cursor(l, c-len)
+    call cursor(l, c-len)
   else
     "echo "Comment not found"
     execute "normal _i" . com
-  call cursor(l, c+len)
+    call cursor(l, c+len)
   endif
 endfunction
 
@@ -168,6 +168,24 @@ function Controlc()
     :!mmake
   endif
 endfunction
+
+function _AleFix()
+  let l = line(".")
+  let c = col(".")
+  let line=getline('.')
+  normal! gvy
+  vs tmp
+  normal! pggdd
+  ALEFix black
+  execute "normal! ggVGy:q!\<CR>gvp"
+endfunc
+
+function Format_ALE()
+  echo v:lnum v:count
+  return 0
+endfunc
+
+"set formatexpr=Format_ALE()
 
 " Enable vim paste mode whenever pasting
 "function! WrapForTmux(s)
@@ -217,12 +235,14 @@ command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
 "show trailing white spaces by default
 
 " remove all whitespaces when done
-autocmd BufWrite * :call <SID>StripTrailingWhiteSpaces()
+"autocmd BufWrite * :call <SID>StripTrailingWhiteSpaces()
 nnoremap  <leader>s :call <SID>StripTrailingWhiteSpaces()<CR>
 nnoremap F :call FoldCloseAll()<CR>
 nnoremap R :call Reorder()<CR>
 nnoremap <leader>c  :call Comment()<CR>
 vnoremap <leader>c  :call Comment()<CR>
+nnoremap <leader>f  :call _AleFix()<CR>
+vnoremap <leader>f  :call _AleFixSelection()<CR>
 " }}}
 
 " KEYBINDS {{{
@@ -344,6 +364,12 @@ let g:airline_symbols.whitespace = 'Ξ'
 " }}}
 
 
+" youcompleteme settings
+" OPTIONAL: do not display popup messages on hover by default.
+let g:ycm_auto_hover = ''
+" }}}
+
+
 " vim-latex {{{
 " REQUIRED. This makes vim invoke Latex-Suite when you open a tex file.
 filetype plugin on
@@ -365,6 +391,7 @@ let g:Tex_FoldedEnvironments = 'verbatim,comment,eq,gather,align,figure,table,ls
 
 "vim:foldmethod=marker:foldlevel=0
 
-" Python black plugin for ale
+" Python black plugin (for ale)
+let g:black_linelength = 80
 let g:ale_fixers = {}
 let g:ale_fixers.python = ['black']
