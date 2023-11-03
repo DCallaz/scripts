@@ -94,6 +94,7 @@ function Reorder()
 
   call <SID>StripTrailingWhiteSpaces()
   let len = strwidth(getline("."))
+  " Merge if current line < 80 and next line is not comment or blank
   if len < 80 && getline(line(".")+1) !~ '^\s*$\|^\s*'.com
     execute "normal M"
   endif
@@ -127,6 +128,17 @@ function Break()
   endif
   execute "normal i\<CR>\<Esc>"
   return 1
+endfunction
+
+function Merge()
+  " Merge lines normally
+  execute "normal! J"
+  let curr = getline('.')[col('.') - 1]
+  let next = getline('.')[col('.')]
+  " Check if extra space was added
+  if (curr =~ '\s') && (next =~ '\s')
+    execute "normal! x"
+  endif
 endfunction
 
 function Comment()
@@ -235,7 +247,7 @@ command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
 "show trailing white spaces by default
 
 " remove all whitespaces when done
-"autocmd BufWrite * :call <SID>StripTrailingWhiteSpaces()
+autocmd BufWrite * :call <SID>StripTrailingWhiteSpaces()
 nnoremap  <leader>s :call <SID>StripTrailingWhiteSpaces()<CR>
 nnoremap F :call FoldCloseAll()<CR>
 nnoremap R :call Reorder()<CR>
@@ -260,7 +272,7 @@ nnoremap <C-\> :NERDTreeToggle<CR>
 nnoremap <C-u> :UndotreeToggle<CR>
 vnoremap p	"0p
 "Join lines
-noremap M J
+noremap M :call Merge()<CR>
 "move line up/down
 noremap K  :move -2<CR>
 noremap J  :move +1<CR>
