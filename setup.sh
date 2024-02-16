@@ -30,18 +30,26 @@ vim -es -u vimrc -i NONE -c "PlugInstall" -c "qa"
 # install latex and texfot if not installed
 # TODO
 # install powerline-fonts for vim airline
+powerline_install=0
 if [ -f "/etc/os-release" ]; then
   distro="$(awk -F= '/^NAME/{print $2}' /etc/os-release | sed 's/"//g')"
   if [ "$distro" == "Ubuntu" ]; then
     sudo apt-get install fonts-powerline
+    if [ $? -eq 0 ]; then
+      powerline_install=1
+    fi
   elif [ "$distro" == "Fedora" ]; then
     sudo dnf install powerline-fonts
-  else
+    if [ $? -eq 0 ]; then
+      powerline_install=1
+    fi
+  fi
+fi
+if [ "$powerline_install" -eq 0 ]; then
     git clone https://github.com/powerline/fonts.git --depth=1
     cd fonts
     ./install.sh
     cd ..
     rm -rf fonts
-  fi
 fi
 echo "DONE: Reload the terminal to source all files"
