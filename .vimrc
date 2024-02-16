@@ -11,15 +11,10 @@ Plug 'ryanpcmcquen/fix-vim-pasting'
 Plug 'morhetz/gruvbox'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'rhysd/vim-clang-format'
 Plug 'valloric/vim-indent-guides'
-Plug 'fedorenchik/VimCalc3'
 Plug 'airblade/vim-gitgutter'
 Plug 'scrooloose/nerdtree'
-Plug 'JamshedVesuna/vim-markdown-preview'
 Plug 'dense-analysis/ale'
-Plug 'psf/black'
-Plug 'johngrib/vim-game-snake'
 Plug 'gsiano/vmux-clipboard'
 Plug 'jrozner/vim-antlr'
 Plug 'vim-latex/vim-latex'
@@ -241,8 +236,10 @@ nnoremap F :call FoldCloseAll()<CR>
 nnoremap R :call Reorder()<CR>
 nnoremap <leader>c  :call Comment()<CR>
 vnoremap <leader>c  :call Comment()<CR>
-nnoremap <leader>f  :call _AleFix()<CR>
-vnoremap <leader>f  :call _AleFixSelection()<CR>
+nnoremap <leader>i  :IndentGuidesToggle<CR>
+nnoremap <leader>u  :GitGutterUndoHunk<CR>
+nnoremap <leader>d  :GitGutterDiffOrig<CR>
+"nnoremap <leader>f  :call _AleFix()<CR>
 " }}}
 
 " KEYBINDS {{{
@@ -255,7 +252,6 @@ nnoremap <Down> 10<C-e>
 nnoremap <Left>   1b
 nnoremap <Right>  1w
 nnoremap \ :noh<return>
-nnoremap <C-l> :IndentGuidesToggle<return>
 nnoremap <C-\> :NERDTreeToggle<CR>
 nnoremap <C-u> :UndotreeToggle<CR>
 vnoremap p	"0p
@@ -306,6 +302,7 @@ inoremap qw <Esc>l
 " }}}
 
 " ALL SETS {{{
+set backspace=indent,eol,start
 set colorcolumn=80
 set number
 "set relativenumber
@@ -339,29 +336,38 @@ let g:airline_solorized_bg='dark'
 set t_Co=256
 
 let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#ale#enabled = 1
+let g:airline#extensions#tabline#formatter = 'jsformatter'
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#syntastic#enabled = 1
 set laststatus=2
-let g:airline_symbols={}
+"let g:airline_symbols={}
+let g:airline_powerline_fonts = 1
 
 if !exists('g:airline_symbols')
     let g:airline_symbols = {}
 endif
 
 " unicode symbols
-let g:airline_left_sep = '»'
+"let g:airline_left_sep = '»'
 "let g:airline_left_sep = '▶'
-let g:airline_right_sep = '«'
+"let g:airline_right_sep = '«'
 "let g:airline_right_sep = '◀'
-let g:airline_symbols.linenr = '␊'
+"let g:airline_symbols.linenr = '␊'
 let g:airline_symbols.linenr = '␤'
-let g:airline_symbols.linenr = '¶'
+"let g:airline_symbols.linenr = '¶'
 let g:airline_symbols.branch = '⎇'
 let g:airline_symbols.paste = 'ρ'
-let g:airline_symbols.paste = 'Þ'
-let g:airline_symbols.paste = '∥'
-let g:airline_symbols.whitespace = 'Ξ'
+"let g:airline_symbols.paste = 'Þ'
+"let g:airline_symbols.paste = '∥'
+"let g:airline_symbols.whitespace = 'Ξ'
 " }}}
+
+" ale settings
+let g:ale_virtualtext_cursor=0
+"let g:ale_echo_msg_error_str = 'E'
+"let g:ale_echo_msg_warning_str = 'W'
+let g:ale_echo_msg_format = '[%severity%] %s [%linter%]'
 
 
 " youcompleteme settings
@@ -369,6 +375,11 @@ let g:airline_symbols.whitespace = 'Ξ'
 let g:ycm_auto_hover = ''
 " }}}
 
+" vim-indent-guides
+let g:indent_guides_color_change_percent = 1
+let g:indent_guides_start_level = 1
+let g:indent_guides_guide_size = 1
+let g:indent_guides_enable_on_vim_startup = 1
 
 " vim-latex {{{
 " REQUIRED. This makes vim invoke Latex-Suite when you open a tex file.
@@ -392,6 +403,6 @@ let g:Tex_FoldedEnvironments = 'verbatim,comment,eq,gather,align,figure,table,ls
 "vim:foldmethod=marker:foldlevel=0
 
 " Python black plugin (for ale)
-let g:black_linelength = 80
-let g:ale_fixers = {}
-let g:ale_fixers.python = ['black']
+"let g:black_linelength = 80
+"let g:ale_fixers = {}
+"let g:ale_fixers.python = ['black']

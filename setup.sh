@@ -1,8 +1,7 @@
 FILES=$(ls -a)
 SCRIPTS=$(pwd)
 # Create symbolic links to home directory
-for file in $FILES
-do
+for file in $FILES; do
   if [[ "$file" != ".." ]] && [[ "$file" != "." ]] && [[ "$file" != ".git" ]] &&
     [[ "$file" != "setup.sh" ]] && [ "$file" != "README.md" ]; then
     #echo $file
@@ -30,4 +29,19 @@ curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
 vim -es -u vimrc -i NONE -c "PlugInstall" -c "qa"
 # install latex and texfot if not installed
 # TODO
+# install powerline-fonts for vim airline
+if [ -f "/etc/os-release" ]; then
+  distro="$(awk -F= '/^NAME/{print $2}' /etc/os-release | sed 's/"//g')"
+  if [ "$distro" == "Ubuntu" ]; then
+    sudo apt-get install fonts-powerline
+  elif [ "$distro" == "Fedora" ]; then
+    sudo dnf install powerline-fonts
+  else
+    git clone https://github.com/powerline/fonts.git --depth=1
+    cd fonts
+    ./install.sh
+    cd ..
+    rm -rf fonts
+  fi
+fi
 echo "DONE: Reload the terminal to source all files"
