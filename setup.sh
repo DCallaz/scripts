@@ -3,16 +3,20 @@ SCRIPTS=$(pwd)
 # Create symbolic links to home directory
 for file in $FILES; do
   if [[ "$file" != ".." ]] && [[ "$file" != "." ]] && [[ "$file" != ".git" ]] &&
-    [[ "$file" != "setup.sh" ]] && [ "$file" != "README.md" ]; then
+    [[ "$file" != "setup.sh" ]] && [ "$file" != "README.md" ] && [ ! -f ~/"$file" ]; then
     #echo $file
     cd ~/
     ln -sf "$SCRIPTS/$file"
     #echo "$SCRIPTS/$file"
+  else
+    echo "Not copying $file"
   fi
 done
 # Set up bash_global link
 if [ -f ~/.bashrc ]; then
-  if [ "$(head -n 1 ~/.bashrc)" == "#!/bin/bash" ]; then
+  if [ "$(grep "# Include global settings" ~/.bashrc)" != "" ]; then
+    echo "Found set-up bashrc already"
+  elif [ "$(head -n 1 ~/.bashrc)" == "#!/bin/bash" ]; then
     # Add below shebang
     sed -i '2s;^;# Include global settings\nsource ~/.bash_global\n\n;' ~/.bashrc
   else
@@ -21,12 +25,14 @@ if [ -f ~/.bashrc ]; then
   fi
 else
     # Create new file
-    echo -e "# Include global settings\nsource ~/.bash_global\n" > ~/.bashrc
+    echo -e "#!/bin/bash\n# Include global settings\nsource ~/.bash_global\n" > ~/.bashrc
 fi
 # Set up vim plug and load all plugins
-curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
-    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-vim -es -u vimrc -i NONE -c "PlugInstall" -c "qa"
+if [ ! -f ~/.vim/autoload/plug.vim ]; then
+  curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+      https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  vim -es -u vimrc -i NONE -c "PlugInstall" -c "qa"
+fi
 # install latex and texfot if not installed
 # TODO
 # install powerline-fonts for vim airline
