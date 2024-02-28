@@ -192,6 +192,26 @@ function Format_ALE()
   return 0
 endfunc
 
+function ScrollPopup(up=0)
+  if (len(popup_list()) >= 1)
+    let popid = popup_list()[0]
+    let firstline = popup_getoptions(popid)['firstline']
+    if (a:up)
+      call popup_setoptions(popid, {'firstline': max([1, firstline-5])})
+    else
+      call popup_setoptions(popid, {'firstline': firstline+5})
+    endif
+  endif
+endfunc
+
+function TogglePopup()
+  if (len(popup_list()) >= 1)
+    call popup_clear()
+  else
+    execute "normal \<plug>(YCMHover)"
+  endif
+endfunc
+
 "set formatexpr=Format_ALE()
 
 " Enable vim paste mode whenever pasting
@@ -281,7 +301,12 @@ noremap <C-y>  y :WriteToVmuxClipboard<CR>
 noremap <C-p>  :ReadFromVmuxClipboard<CR> p
 "youcompleteme commands
 noremap <leader>g :YcmCompleter GoTo<CR>
-nmap <C-q> <plug>(YCMHover)
+nmap <C-q> :call TogglePopup()<CR>
+"   -> scroll ycm popup
+execute "set <M-j>=\ej"
+execute "set <M-k>=\ek"
+noremap <M-j> :call ScrollPopup()<CR>
+noremap <M-k> :call ScrollPopup(1)<CR>
 "Open in normal
 nnoremap <leader>o  o<Esc>
 nnoremap <leader>O O<Esc>
@@ -289,7 +314,6 @@ nnoremap <leader>O O<Esc>
 nnoremap <leader><TAB> :ALENextWrap<CR>
 "Script running
 nnoremap <C-c> :call Controlc()<CR>
-vnoremap p	"0p
 "Spell check
 nnoremap <C-s>  :setlocal spell spelllang=en_gb<CR>
 "space open/closes folds
