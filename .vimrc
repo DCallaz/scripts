@@ -303,10 +303,8 @@ noremap <C-p>  :ReadFromVmuxClipboard<CR> p
 noremap <leader>g :YcmCompleter GoTo<CR>
 nmap <C-q> :call TogglePopup()<CR>
 "   -> scroll ycm popup
-execute "set <M-j>=\ej"
-execute "set <M-k>=\ek"
-noremap <M-j> :call ScrollPopup()<CR>
-noremap <M-k> :call ScrollPopup(1)<CR>
+noremap <C-j> :call ScrollPopup()<CR>
+noremap <C-k> :call ScrollPopup(1)<CR>
 "Open in normal
 nnoremap <leader>o  o<Esc>
 nnoremap <leader>O O<Esc>
