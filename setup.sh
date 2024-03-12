@@ -33,6 +33,9 @@ if [ ! -f ~/.vim/autoload/plug.vim ]; then
       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   vim -es -u vimrc -i NONE -c "PlugInstall" -c "qa"
 fi
+# Set up tmux plugin manager & plugins
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+~/.tmux/plugins/tpm/bin/install_plugins
 # install latex and texfot if not installed
 # TODO
 # install powerline-fonts for vim airline
