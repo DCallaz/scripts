@@ -32,6 +32,7 @@ alias vrc='vim ~/.vimrc'
 # Search files in the current folder
 alias f="find . | grep "
 #alias ascii="xdg-open ~/.ascii.gif"
+alias vpn="sudo ~/bin/vpn"
 
 #grep stuff
 export GREP_OPTIONS='--color=auto'

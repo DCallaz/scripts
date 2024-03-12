@@ -1,0 +1,41 @@
+#!/bin/bash
+USAGE="sudo vpn [-h] [connect/disconnect]"
+while getopts ":h" opt; do
+  case ${opt} in
+    h )
+      echo "$USAGE"
+      exit 0
+      ;;
+  esac
+done
+shift $((OPTIND -1))
+if [ $(id -u) -ne 0 ]; then
+  echo "Must be run as root." >&2
+  echo "$USAGE"
+  exit 1
+fi
+connect=-1
+if [ $# -eq 1 ]; then
+  if [ "$1" == "connect" ]; then
+    connect=1
+  elif [ "$1" == "disconnect" ]; then
+    connect=0
+  fi
+fi
+if [ $connect -eq -1 ]; then
+  if [ -f ~/.vpn ] && [ "$(cat ~/.vpn)" == "CONNECTED" ]; then
+    connect=0
+  else
+    connect=1
+  fi
+fi
+
+if [ $connect -eq 1 ]; then
+  gpclient connect stbvpn.sun.ac.za &
+  echo "CONNECTED"
+  echo "CONNECTED" > ~/.vpn
+else
+  gpclient disconnect
+  echo "DISCONNECTED"
+  echo "DISCONNECTED" > ~/.vpn
+fi
