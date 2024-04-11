@@ -11,6 +11,16 @@ then
       stty -ixon
 fi
 
+# Bash subdirectory file expansion
+shopt -s globstar
+
+# preserve parallel history
+shopt -s histappend
+
+# Longer bash history
+export HISTSIZE=10000
+export HISTFILESIZE=$HISTSIZE
+
 #My aliases
 alias c='clear'
 
@@ -86,6 +96,10 @@ extract () {
       return 2
 		fi
 	done
+}
+
+tmx() {
+  source ~/bin/tmx
 }
 
 #Adds a given tmx format to the list of known formats
