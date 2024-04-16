@@ -1,13 +1,47 @@
 #!/bin/bash
-old=$1
+USAGE="USAGE: mark [-hsc] <markdown file>
+  where
+  -s: Specify to make mark open a server, else mark will open a single file
+  -c: Close any open servers"
 server=0
-if [ "$2" == "--server" ]; then
-  server=1
-fi
-file=${old[@]//\.md/}
-if [ $server == 1 ]; then
-  grip -b $old
+close=0
+while getopts ":hsc" opt; do
+  case ${opt} in
+    h )
+      echo "$USAGE"
+      exit 0
+      ;;
+    s )
+      server=1
+      ;;
+    c )
+      close=1
+      ;;
+    \? )
+      echo "Invalid option: $OPTARG" 1>&2
+      ;;
+    : )
+      echo "Invalid option: $OPTARG requires an argument" 1>&2
+      ;;
+  esac
+done
+shift $((OPTIND -1))
+old=$1
+if [ $close -eq 1 ]; then
+  pkill -f grip.*$old
 else
-  grip -b --export $old
-  firefox $file.html
+  file=${old[@]//\.md/}
+  if [ $server -eq 1 ]; then
+    if [ "$(pgrep -f grip.*$old)" ]; then
+      firefox http://localhost:6419
+      exit 0
+    elif [ "$(pgrep grip)" ]; then
+      pkill grip
+    fi
+      grip -b --quiet $old &>/dev/null &
+  else
+    grip --export $old
+    firefox $file.html
+    rm $file.html
+  fi
 fi

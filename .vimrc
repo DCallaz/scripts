@@ -168,7 +168,7 @@ endfunction
 function Controlc()
   let extension = expand('%:e')
   if extension == "md"
-    :execute "silent !mark %" | redraw!
+    :execute "silent !mark -s %" | redraw!
   elseif extension == "tex"
     :execute "silent !pdftex %" | redraw!
   else
@@ -238,6 +238,14 @@ endfunc
 "inoremap <special> <expr> <Esc>[200~ XTermPasteBegin()
 " end
 
+" Autocommands
+augroup autocom
+  autocmd!
+  " Executes the following on exit of a markdown file
+  autocmd VimLeave *.md !mark -c %
+
+augroup END
+
 filetype plugin on
 set omnifunc=syntaxcomplete#Complete
 autocmd Filetype java setlocal omnifunc=javacomplete#Complete
@@ -261,8 +269,11 @@ command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
     \ | wincmd p | diffthis
 "show trailing white spaces by default
 
-" remove all whitespaces when done
-autocmd BufWrite * :call <SID>StripTrailingWhiteSpaces()
+augroup whitespace
+  autocmd!
+  " remove all whitespaces when done
+  autocmd BufWrite * :call <SID>StripTrailingWhiteSpaces()
+augroup END
 nnoremap  <leader>s :call <SID>StripTrailingWhiteSpaces()<CR>
 nnoremap F :call FoldCloseAll()<CR>
 nnoremap R :call Reorder()<CR>
