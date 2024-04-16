@@ -1,8 +1,11 @@
 #!/bin/bash
 
-command -v tmux >/dev/null 2>&1 || { printf "Cockpit requires tmux but it is not installed.
-Please check http://cockpit.27ae60.com/help.html for more information.
-Aborting." >&2; exit 1; }
+command -v tmux >/dev/null 2>&1 || { printf "tmx requires tmux but it is not installed.
+Aborting." >&2; return 1; }
+
+local format
+local dir
+local SESSION
 
 # Proccess cmd line options
 while getopts ":hf:d:" opt; do
@@ -22,7 +25,7 @@ while getopts ":hf:d:" opt; do
       echo "      <cmd>:  Executes <cmd> in the current pane."
       echo "  -d start-dir"
       echo "    Start the new tmux session at the given start directory path"
-      exit 0
+      return 0
       ;;
     f )
       format=$OPTARG
@@ -66,9 +69,9 @@ else
       touch ~/bin/.tmux.formats
     fi
     for line in $(cat ~/bin/.tmux.formats); do
-      name=$(echo "$line" | awk -F "::" '{print $1}')
-      form=$(echo "$line" | awk -F "::" '{print $2}')
-      d=$(echo "$line" | awk -F "::" '{print $3}')
+      local name=$(echo "$line" | awk -F "::" '{print $1}')
+      local form=$(echo "$line" | awk -F "::" '{print $2}')
+      local d=$(echo "$line" | awk -F "::" '{print $3}')
       #name="${line%%::*}"
       #form="${line##*::}"
       if [ "$SESSION" == "$name" ]; then
@@ -81,12 +84,9 @@ else
     unset IFS
   fi
   dir="$(readlink -f "$(echo ${dir/"~"/~})")"
-  if [ "$dir" != "" ] && [ -d "$dir" ] ; then
-    cd "$dir"
-  fi
 
   # create a new session, named $SESSION, and detach from it
-  tmux -2 new-session -n $SESSION -d -s $SESSION
+  tmux -2 new-session -n $SESSION -d -s $SESSION ${dir:+-c "$dir"}
 
   tmux set set-titles on
   tmux set set-titles-string $SESSION
@@ -96,8 +96,8 @@ else
 
   # Now populate the session with the windows you use every day
   if [ ! -z "$format" ]; then
-    i=0
-    size=${#format}
+    local i=0
+    local size=${#format}
     while [ $i -lt $size ]; do
       case ${format:$i:1} in
         \| )
@@ -119,13 +119,13 @@ else
           tmux select-pane -L
           ;;
         { )
-          s=$(expr $i + 1)
+          local s=$(expr $i + 1)
           i=$(expr $i + 1)
           while [ "${format:$i:1}" != "}" ]; do
             i=$(expr $i + 1)
           done
-          len=$(expr $i - $s)
-          com=${format:$s:$len}
+          local len=$(expr $i - $s)
+          local com=${format:$s:$len}
           #echo "command: \"$com\""
           tmux send-keys "$com" Enter
           ;;
