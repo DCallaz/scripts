@@ -301,12 +301,13 @@ noremap <C-y>  y :WriteToVmuxClipboard<CR>
 noremap <C-p>  :ReadFromVmuxClipboard<CR> p
 "youcompleteme commands
 noremap <leader>g :YcmCompleter GoTo<CR>
+noremap <leader>f :YcmCompleter FixIt<CR>
 nmap <C-q> :call TogglePopup()<CR>
 "   -> scroll ycm popup
-noremap <C-j> :call ScrollPopup()<CR>
-noremap <C-k> :call ScrollPopup(1)<CR>
+noremap <S-Down> :call ScrollPopup()<CR>
+noremap <S-Up> :call ScrollPopup(1)<CR>
 "Open in normal
-nnoremap <leader>o  o<Esc>
+nnoremap <leader>o o<Esc>
 nnoremap <leader>O O<Esc>
 "Ale next
 nnoremap <leader><TAB> :ALENextWrap<CR>
