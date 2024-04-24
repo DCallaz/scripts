@@ -100,10 +100,10 @@ else
     while [ $i -lt $size ]; do
       case ${format:$i:1} in
         \| )
-          tmux split-window -h -p 50
+          tmux split-window ${dir:+-c "$dir"} -h -p 50
           ;;
         _ )
-          tmux split-window -v -p 50
+          tmux split-window ${dir:+-c "$dir"} -v -p 50
           ;;
         ^ )
           tmux select-pane -U
