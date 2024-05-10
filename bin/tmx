@@ -84,14 +84,26 @@ else
   fi
   dir="$(readlink -f "$(echo ${dir/"~"/~})")"
 
+  # create dummy session to set options if needed
+  tmux list-sessions &> /dev/null
+  inactive="$?"
+  if [ $inactive -eq 1 ]; then
+    tmux new-session -d -s dummy
+    tmux set-option -g base-index 1
+    tmux set-window-option -g pane-base-index 1
+  fi
+
   # create a new session, named $SESSION, and detach from it
   tmux -2 new-session -n $SESSION -d -s $SESSION ${dir:+-c "$dir"}
 
   tmux set set-titles on
   tmux set set-titles-string $SESSION
-  tmux set-option -g base-index 1
   tmux set-window-option -t $SESSION -g automatic-rename off
-  tmux set-window-option -g pane-base-index 1
+
+  # kill dummy session if created
+  if [ $inactive -eq 1 ]; then
+    tmux kill-session -t dummy
+  fi
 
   # Now populate the session with the windows you use every day
   if [ ! -z "$format" ]; then
