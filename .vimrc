@@ -152,15 +152,15 @@ function Comment()
 
   if line =~ '^\s*' . com
     "echo "Found comment"
-    if len == 2
-      execute "normal _xx"
-    elseif len == 1
-      execute "normal _x"
-    endif
+    execute l . 's@^\(\s*\)\M' . com . '\m\s*@\1@'
     call cursor(l, c-len)
   else
     "echo "Comment not found"
-    execute "normal _i" . com
+    if line =~ '^\s*$'
+      execute "normal _i" . com
+    else
+      execute "normal _i" . com . " "
+    endif
     call cursor(l, c+len)
   endif
 endfunction
