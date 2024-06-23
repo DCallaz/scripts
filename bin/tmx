@@ -56,7 +56,7 @@ if [ "$HISTFILE" != "" ]; then
 fi
 
 # if the session is already running, just attach to it.
-tmux has-session -t $SESSION > /dev/null 2>&1
+tmux has-session -t="$SESSION" > /dev/null 2>&1
 if [ $? -eq 0 ]; then
   echo "Session $SESSION already exists. Attaching."
   sleep 0.1
