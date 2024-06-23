@@ -152,7 +152,7 @@ function Comment()
 
   if line =~ '^\s*' . com
     "echo "Found comment"
-    execute l . 's@^\(\s*\)\M' . com . '\m\s*@\1@'
+    execute l . 's@^\(\s*\)\M' . com . '\m\( \(\s\+\)\@!\)\?@\1@'
     call cursor(l, c-len)
   else
     "echo "Comment not found"
