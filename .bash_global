@@ -25,10 +25,8 @@ export HISTFILESIZE=$HISTSIZE
 alias c='clear'
 
 alias ls='ls -Fh --color=auto'
-alias ll='ls -l'
-alias la='ls -la'
-alias lj='ls -la *.java'
-alias lc='ls -la *.c'
+alias ll='ls -lv'
+alias la='ls -lva'
 
 alias ga='git add'
 alias gc='git commit'
@@ -37,8 +35,6 @@ alias gpl='git pull'
 alias gps='git push'
 alias gs='git status'
 alias gk='gitk'
-alias brc='vim ~/.bashrc'
-alias vrc='vim ~/.vimrc'
 # Search files in the current folder
 alias f="find . | grep "
 #alias ascii="xdg-open ~/.ascii.gif"
@@ -134,12 +130,15 @@ src () {
   LS=$(echo */)
   LSARRAY=($LS)
   while [ "${LSARRAY[0]}" != "*/" ]; do
-    if [[ "${LSARRAY[@]}" =~ "main/" ]]; then
-      cd main
-      echo "changed to main"
-    elif [[ "${LSARRAY[@]}" =~ "src/" ]]; then
+    if [[ "${LSARRAY[@]}" =~ "src/" ]]; then
       cd src
       echo "changed to src"
+    elif [[ "${LSARRAY[@]}" =~ "main/" ]]; then
+      cd main
+      echo "changed to main"
+    elif [[ "${LSARRAY[@]}" =~ "java/" ]]; then
+      cd java
+      echo "changed to java"
     else
       cd "${LSARRAY[0]}"
       echo "changed to ${LSARRAY[0]}"
