@@ -231,6 +231,25 @@ sett () {
 }
 export -f sett
 
+# Progress bar
+progress () {
+  if [ $# -lt 2 ]; then
+    echo "USAGE: progress <current> <total>"
+    return 1
+  fi
+  cur=$1
+  max=$2
+  size=$(tput cols)
+  size=$(($size-7))
+  perc=$(($cur*100/$max))
+  nfill=$(($cur*$size/$max))
+  nempty=$(($size-$nfill))
+  fill="$(printf '%*s' $nfill | tr ' ' '#')"
+  empty="$(printf '%*s' $nempty)"
+  printf "\r[$fill$empty] %03i%%" $perc
+}
+export -f progress
+
 # get current status of git repo
 function parse_git_dirty {
 	status=`git status 2>&1 | tee`
