@@ -246,7 +246,7 @@ progress () {
   nempty=$(($size-$nfill))
   fill="$(printf '%*s' $nfill | tr ' ' '#')"
   empty="$(printf '%*s' $nempty)"
-  printf "\r[$fill$empty] %03i%%" $perc
+  printf "\r[$fill$empty] %3i%%" $perc
 }
 export -f progress
 
