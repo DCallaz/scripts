@@ -1,7 +1,7 @@
 #!/bin/bash
 shopt -s expand_aliases
 old=$1
-main="$(find -name "*.latexmain" -printf "%f")"
+main="$(find . -maxdepth 1 -mindepth 1 -name "*.latexmain" -printf "%f")"
 if [ -f "$main" ]; then
   echo "Found mainfile: $main"
   old="${main%.latexmain}"
