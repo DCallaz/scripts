@@ -1,4 +1,0 @@
-#!/bin/bash
-for filename in ./*.mkv; do
-	ffmpeg -i $filename -vcodec copy -acodec copy $(basename "$filename" .mkv).mp4
-done

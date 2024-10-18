@@ -79,6 +79,7 @@ extract () {
 			case "$archive" in
 				*.tar.bz2)   tar xvjf "$archive"    ;;
 				*.tar.gz)    tar xvzf "$archive"    ;;
+        *.tar.zst)   tar --zstd -xvf "$archive" ;;
 				*.bz2)       bunzip2 "$archive"     ;;
 				*.rar)       rar x "$archive"       ;;
 				*.gz)        gunzip "$archive"      ;;
