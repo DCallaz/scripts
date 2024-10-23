@@ -419,6 +419,21 @@ let g:ale_echo_msg_format = '[%severity%] %s [%linter%]'
 " youcompleteme settings
 " OPTIONAL: do not display popup messages on hover by default.
 let g:ycm_auto_hover = ''
+
+" Set python virtual environment interpreter
+autocmd Filetype python call SetPythonPath()
+function SetPythonPath()
+  :cd %:h
+  let pyfile = findfile('python3', '**0/.*/bin/**;')
+  :cd -
+  let g:ycm_python_interpreter_path = pyfile
+  let g:ycm_python_sys_path = []
+  let g:ycm_extra_conf_vim_data = [
+    \  'g:ycm_python_interpreter_path',
+    \  'g:ycm_python_sys_path'
+    \]
+  let g:ycm_global_ycm_extra_conf = '~/global_extra_conf.py'
+endfunction
 " }}}
 
 " vim-indent-guides

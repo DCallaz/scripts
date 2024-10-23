@@ -1,5 +1,5 @@
 #!/bin/bash
-source ~/completion.bash
+source "$HOME/completion.bash"
 export EDITOR=vim
 export VISUAL=vim
 export JAVA_HOME="/usr/lib/jvm/default-java"
@@ -96,10 +96,6 @@ extract () {
       return 2
 		fi
 	done
-}
-
-tmx() {
-  source ~/bin/tmx
 }
 
 #Adds a given tmx format to the list of known formats
@@ -287,6 +283,7 @@ function parse_git_dirty {
 }
 
 export PS1="\[\e[35m\]\u\[\e[m\]\[\e[37m\]@\[\e[m\]\[\e[35m\]\h\[\e[m\]\[\e[32m\]\`parse_git_branch\`\[\e[m\]-\[\e[33m\]\A\[\e[m\]\[\e[31m\]\w\[\e[m\]\[\e[36m\]\\$\[\e[m\]\n> "
+# export PS1="\[\e[35m\]\u\[\e[m\]\[\e[37m\]@\[\e[m\]\[\e[35m\]\h\[\e[m\]\[\e[32m\]\`__git_ps1 \"[%s]\"\`\[\e[m\]-\[\e[33m\]\A\[\e[m\]\[\e[31m\]\w\[\e[m\]\[\e[36m\]\\$\[\e[m\]\n> "
 #neofetch --ascii ~/.config/noefetch/rpi_ascii --ascii_colors 2
 #neofetch
 
@@ -299,6 +296,9 @@ PERL_MM_OPT="INSTALL_BASE=/home/dylan/perl5"; export PERL_MM_OPT;
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# Activate python "global" virtual environment
+[[ -s "$HOME/.global_python_venv/bin/activate" ]] && source "$HOME/.global_python_venv/bin/activate"
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"

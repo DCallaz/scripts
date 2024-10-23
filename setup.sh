@@ -27,6 +27,12 @@ else
     # Create new file
     echo -e "#!/bin/bash\n# Include global settings\nsource ~/.bash_global\n" > ~/.bashrc
 fi
+# Set up python "global" virtual environment
+if command  -v python3 2>&1 >/dev/null; then
+  python3 -m venv --clear --upgrade-deps ~/.global_python_venv
+  # remove prompt prefix for global env
+  sed -i "s/(\.global_python_venv) //g" ~/.global_python_venv/bin/*
+fi
 # Set up vim plug and load all plugins
 if [ ! -f ~/.vim/autoload/plug.vim ]; then
   curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
