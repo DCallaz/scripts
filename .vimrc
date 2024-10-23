@@ -424,7 +424,7 @@ let g:ycm_auto_hover = ''
 autocmd Filetype python call SetPythonPath()
 function SetPythonPath()
   :cd %:h
-  let pyfile = findfile('python3', '**0/.*/bin/**;')
+  let pyfile = findfile('python3', '**0/.*/bin/**,**0/*/bin/**;')
   :cd -
   let g:ycm_python_interpreter_path = pyfile
   let g:ycm_python_sys_path = []
