@@ -414,18 +414,33 @@ let g:ale_virtualtext_cursor=0
 "let g:ale_echo_msg_error_str = 'E'
 "let g:ale_echo_msg_warning_str = 'W'
 let g:ale_echo_msg_format = '[%severity%] %s [%linter%]'
+let g:ale_python_auto_virtualenv = 1
+" }}}
 
 
 " youcompleteme settings
 " OPTIONAL: do not display popup messages on hover by default.
 let g:ycm_auto_hover = ''
 
-" Set python virtual environment interpreter
+" Set python virtual environment interpreter for YCM and ALE
 autocmd Filetype python call SetPythonPath()
 function SetPythonPath()
-  :cd %:h
-  let pyfile = findfile('python3', '**0/.*/bin/**,**0/*/bin/**;')
+  " Get the path of the closest python executable
+  :cd %:p:h
+  let file_dir = fnamemodify(@%, ':p:h')
+  let hidden_pyfile = fnamemodify(findfile('python3', '**0/.*/bin;'), ':p')
+  let visible_pyfile = fnamemodify(findfile('python3', '**0/*/bin;'), ':p')
+
+  let hidden_pre = matchlist(hidden_pyfile."\0".file_dir, '\v^(.+).*'."\0".'\1')[1]
+  let visible_pre = matchlist(visible_pyfile."\0".file_dir, '\v^(.+).*'."\0".'\1')[1]
+  if (strlen(hidden_pre) >= strlen(visible_pre))
+    let pyfile = hidden_pyfile
+  else
+    let pyfile = visible_pyfile
+  endif
   :cd -
+  " end
+  let g:ale_python_mypy_options = '--python-executable ' . pyfile
   let g:ycm_python_interpreter_path = pyfile
   let g:ycm_python_sys_path = []
   let g:ycm_extra_conf_vim_data = [
