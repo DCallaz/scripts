@@ -423,7 +423,7 @@ let g:ale_python_auto_virtualenv = 1
 let g:ycm_auto_hover = ''
 
 " Set python virtual environment interpreter for YCM and ALE
-autocmd Filetype python call SetPythonPath()
+autocmd Filetype python ++once call SetPythonPath()
 function SetPythonPath()
   " Get the path of the closest python executable
   :cd %:p:h
@@ -440,7 +440,18 @@ function SetPythonPath()
   endif
   :cd -
   " end
-  let g:ale_python_mypy_options = '--python-executable ' . pyfile
+  " Set the ALE mypy option if python version is high enough
+  let pyver = matchlist(system(pyfile . ' --version'), '\vPython (([0-9]+)\.([0-9]+))\.[0-9]+')
+  let ver =  pyver[1]
+  let maj = pyver[2]
+  let min = pyver[3]
+  if (maj == 3 && min > 6)
+    let g:ale_python_mypy_options = '--python-version ' . ver .
+      \ ' --python-executable ' . pyfile
+  else
+    let g:ale_python_mypy_options = '--no-site-packages'
+  endif
+  " Set the YCM options
   let g:ycm_python_interpreter_path = pyfile
   let g:ycm_python_sys_path = []
   let g:ycm_extra_conf_vim_data = [
