@@ -26,8 +26,15 @@ call plug#end()
 
 " Colors {{{
 "GRUVBOX
+" set termguicolors
+" let g:gruvbox_italic=1
 colorscheme gruvbox
 set background=dark
+
+augroup my_colours
+  autocmd!
+  autocmd ColorScheme gruvbox hi SpellBad cterm=reverse
+augroup END
 
 "MONOKAI DARK
 "colorscheme monokai
@@ -47,30 +54,6 @@ function! <SID>StripTrailingWhiteSpaces()
   let c = col(".")
   %s/\s\+$//e
   " restore hostory
-  let @/=_s
-  call cursor(l, c)
-endfunction
-
-function FoldCloseAll()
-  let _s=@/
-  let l = line(".")
-  let c = col(".")
-
-  execute "normal zR"
-  execute "normal ggzj"
-  let lprev = line(".")
-  execute "normal zj"
-  silent! foldclose
-  let lnow = line(".")
-  while lnow != lprev
-    execute "normal zj"
-    silent! foldclose
-    let lprev = lnow
-    let lnow = line(".")
-  endwhile
-  execute "normal ggzj"
-  silent! foldclose
-
   let @/=_s
   call cursor(l, c)
 endfunction
@@ -275,7 +258,7 @@ augroup whitespace
   autocmd BufWrite * :call <SID>StripTrailingWhiteSpaces()
 augroup END
 nnoremap  <leader>s :call <SID>StripTrailingWhiteSpaces()<CR>
-nnoremap F :call FoldCloseAll()<CR>
+nnoremap <C-f> :%foldc<CR>
 nnoremap R :call Reorder()<CR>
 nnoremap <leader>c  :call Comment()<CR>
 vnoremap <leader>c  :call Comment()<CR>
@@ -312,6 +295,7 @@ noremap <C-y>  y :WriteToVmuxClipboard<CR>
 noremap <C-p>  :ReadFromVmuxClipboard<CR> p
 "youcompleteme commands
 noremap <leader>g :YcmCompleter GoTo<CR>
+noremap <leader>r :YcmCompleter GoToReferences<CR>
 noremap <leader>f :YcmCompleter FixIt<CR>
 nmap <C-q> :call TogglePopup()<CR>
 "   -> scroll ycm popup

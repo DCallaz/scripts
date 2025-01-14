@@ -4,13 +4,15 @@ command -v tmux >/dev/null 2>&1 || { printf "tmx requires tmux but it is not ins
 Aborting." >&2; exit 1; }
 
 # Proccess cmd line options
-while getopts ":hf:d:" opt; do
+while getopts ":hlf:d:" opt; do
   case ${opt} in
     h )
       echo "Usage: tmx [-h] [-f format] [-d start dir] [name]"
       echo "where options include:"
       echo "  -h"
       echo "    Display this message"
+      echo "  -l"
+      echo "    List active sessions and stored formats"
       echo "  -f format"
       echo "    Format the new tmux session using the format string given"
       echo "    where <format> = \"{[<op>[<ctrl>]][{<cmd>}]}\""
@@ -21,6 +23,16 @@ while getopts ":hf:d:" opt; do
       echo "      <cmd>:  Executes <cmd> in the current pane."
       echo "  -d start-dir"
       echo "    Start the new tmux session at the given start directory path"
+      exit 0
+      ;;
+    l )
+      echo "Active sessions:"
+      tmux ls -F#{session_name} | xargs 2> /dev/null
+      echo -e "\nStored formats:"
+      sed 's/::.*//' ~/bin/.tmux.formats | xargs
+      echo -e "\nDetails:"
+      tmux list-sessions
+      awk -F "::" '{print $1":","(\""$2"\",",$3")"}' ~/bin/.tmux.formats
       exit 0
       ;;
     f )
