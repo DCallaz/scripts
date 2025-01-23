@@ -17,6 +17,9 @@ shopt -s globstar
 # Bash no results for failed file expansion
 shopt -s nullglob
 
+# Bash C sorting order for filenames
+export LC_COLLATE="C"
+
 # preserve parallel history
 shopt -s histappend
 

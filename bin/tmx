@@ -26,12 +26,21 @@ while getopts ":hlf:d:" opt; do
       exit 0
       ;;
     l )
+      if tmux info &> /dev/null; then
+        active=1
+      fi
       echo "Active sessions:"
-      tmux ls -F#{session_name} | xargs 2> /dev/null
+      if [ -n "$active" ]; then
+        tmux ls -F#{session_name} | xargs 2> /dev/null
+      else
+        echo "No active sessions"
+      fi
       echo -e "\nStored formats:"
       sed 's/::.*//' ~/bin/.tmux.formats | xargs
       echo -e "\nDetails:"
-      tmux list-sessions
+      if [ -n "$active" ]; then
+        tmux list-sessions
+      fi
       awk -F "::" '{print $1":","(\""$2"\",",$3")"}' ~/bin/.tmux.formats
       exit 0
       ;;
