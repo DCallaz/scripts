@@ -101,33 +101,6 @@ extract () {
 	done
 }
 
-#Adds a given tmx format to the list of known formats
-updateTmxFormat () {
-  if [ $# -ge 2 ]; then
-    # add start dir to the end if needed
-    dir=""
-    if [ $# == 3 ]; then
-      dir="::$(readlink -f "$(echo ${3/"~"/~})")"
-    fi
-    # Add format and dir to the formats file, or update if it exists
-    if [ "$(grep "^$1" ~/bin/.tmux.formats)" != "" ]; then
-      echo "Updating format for \"$1\""
-      sed -i "s#^$1::.*#$1::$2$dir#" ~/bin/.tmux.formats
-    else
-      echo "Adding format for \"$1\""
-      echo "$1::$2$dir" >> ~/bin/.tmux.formats
-    fi
-  elif [ "$#" == "1" ]; then
-      echo "Deleting format for \"$1\""
-      sed -i "/^$1::.*/d" ~/bin/.tmux.formats
-  else
-    echo "USAGE: updateTmxFormat <name> [<format string> [<start dir>]]"
-    echo "  where giving just a name will attempt to delete that file and:"
-    echo "   <format string>: a string describing the format for the tmux session"
-    echo "   <start dir>: the path (relative or absolute) of the directory to start in"
-  fi
-}
-
 #Finds a source code directory below the current and goes there
 src () {
   LS=$(echo */)
