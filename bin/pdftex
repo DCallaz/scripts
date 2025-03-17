@@ -6,16 +6,23 @@ where options include:
     Display this message
   -k
     Keep all auxillary output files latex produces instead of removing them
+  -b <bibliography file>
+    Use the specified bibliography file
   <input file>
     The (optional) latex input file to compile (with or without extension)"
-while getopts ":hk" opt; do
+while getopts ":hkb:" opt; do
   case ${opt} in
-    t )
-      target=$OPTARG
-      ;;
     h )
       echo "$USAGE"
       exit 0
+      ;;
+    b )
+      bib="$OPTARG"
+      if [ ! -f "$bib" ]; then
+        echo "ERROR: Bibliography file \"$bib\" does not exist"
+        echo "$USAGE"
+        exit 1
+      fi
       ;;
     k )
       keep=1
@@ -57,12 +64,17 @@ if [ $? != 0 ]; then
   exit 1
 fi
 
-# Step 2: Run bibtex
-echo "${green}Step 2/4: running bibtex${reset}"
-if [ "$(echo "$save" | grep "[b\|B]iber")" ] && [ "$(biber --version)" ]; then
-  texfot biber $file | color
+# Step 2: Run bibtex (or use given bib file)
+if [ -v bib ]; then
+  echo "${green}Step 2/4: using specified bibliography file${reset}"
+  cp "$bib" "$file.bbl"
 else
-  texfot bibtex $file | color
+  echo "${green}Step 2/4: running bibtex${reset}"
+  if [ "$(echo "$save" | grep "[b\|B]iber")" ] && [ "$(biber --version)" ]; then
+    texfot biber $file | color
+  else
+    texfot bibtex $file | color
+  fi
 fi
 
 # Step 3: recompile with latex
