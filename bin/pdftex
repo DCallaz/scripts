@@ -1,5 +1,34 @@
 #!/bin/bash
 shopt -s expand_aliases
+USAGE="Usage: pdftex [-h] [-k] [<input file>]
+where options include:
+  -h
+    Display this message
+  -k
+    Keep all auxillary output files latex produces instead of removing them
+  <input file>
+    The (optional) latex input file to compile (with or without extension)"
+while getopts ":hk" opt; do
+  case ${opt} in
+    t )
+      target=$OPTARG
+      ;;
+    h )
+      echo "$USAGE"
+      exit 0
+      ;;
+    k )
+      keep=1
+      ;;
+    \? )
+      echo "Invalid option: $OPTARG" 1>&2
+      ;;
+    : )
+      echo "Invalid option: $OPTARG requires an argument" 1>&2
+      ;;
+  esac
+done
+shift $((OPTIND -1))
 old=$1
 main="$(find . -maxdepth 1 -mindepth 1 -name "*.latexmain" -printf "%f")"
 if [ -f "$main" ]; then
@@ -12,33 +41,49 @@ warn=`tput setaf 3`
 err=`tput setaf 1`
 reset=`tput sgr0`
 alias color='sed "s/.*\(W\|w\)arning.*/${warn}&${reset}/" | sed "s/\!.*\|.*\(e\|E\)rror.*/${err}&${reset}/"'
+
+remove_aux_files() {
+  if [ ! -v keep ]; then # only remove if not to keep
+    ls $file.* | grep -P $file'\.(?!tex|pdf|bib)' | xargs rm
+  fi
+}
+
+# Step 1: Compile with latex
 echo "${green}Step 1/4: running pdflatex${reset}"
 save=$(texfot --ignore="Warning: (Citation|Reference)" pdflatex -interaction=nonstopmode $file)
 if [ $? != 0 ]; then
   echo "$save" | color
-  ls $file.* | grep -P $file'\.(?!tex|pdf|bib)' | xargs rm
+  remove_aux_files
   exit 1
 fi
+
+# Step 2: Run bibtex
 echo "${green}Step 2/4: running bibtex${reset}"
 if [ "$(echo "$save" | grep "[b\|B]iber")" ] && [ "$(biber --version)" ]; then
   texfot biber $file | color
 else
   texfot bibtex $file | color
 fi
+
+# Step 3: recompile with latex
 echo "${green}Step 3/4: running pdflatex${reset}"
 save=$(texfot --ignore="Warning: Citation" pdflatex -interaction=nonstopmode $file)
 if [ $? != 0 ]; then
   echo "$save" | color
-  ls $file.* | grep -P $file'\.(?!tex|pdf|bib)' | xargs rm
+  remove_aux_files
   exit 1
 fi
+
+# Step 4: recompile with latex (again)
 echo "${green}Step 4/4: running pdflatex${reset}"
 save=$(texfot pdflatex -interaction=nonstopmode $file)
 if [ $? != 0 ]; then
   echo "$save" | color
-  ls $file.* | grep -P $file'\.(?!tex|pdf|bib)' | xargs rm
+  remove_aux_files
   exit 1
 fi
 echo "$save" | color
-ls $file.* | grep -P $file'\.(?!tex|pdf|bib)' | xargs rm
+
+# Remove files and open document
+remove_aux_files
 evince $file.pdf &> /dev/null &

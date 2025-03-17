@@ -59,11 +59,9 @@ while getopts ":hluxf:d:" opt; do
       ;;
     f )
       format=$OPTARG
-      f=1
       ;;
     d )
       dir=$OPTARG
-      d=1
       ;;
     \? )
       echo "Invalid option: $OPTARG" 1>&2
@@ -88,10 +86,10 @@ if [ "$update" == "1" ] || [ "$delete" == "1" ]; then
     # Add format and dir to the formats file, or update if it exists
     if [ "$(grep "^$1" ~/bin/.tmux.formats)" != "" ]; then
       echo "Updating format for \"$1\""
-      if [ ! "$f" ]; then
+      if [ ! -v format ]; then
         format="\\1"
       fi
-      if [ ! "$d" ]; then
+      if [ ! -v dir ]; then
         dir="\\2"
       fi
       sed -i -E "s#^$1::([^:]*)(::[^:]+)?#$1::${format}${dir}#" ~/bin/.tmux.formats
