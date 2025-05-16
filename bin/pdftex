@@ -1,5 +1,9 @@
 #!/bin/bash
 shopt -s expand_aliases
+green=`tput setaf 2;`
+warn=`tput setaf 3`
+err=`tput setaf 1`
+reset=`tput sgr0`
 USAGE="Usage: pdftex [-h] [-k] [<input file>]
 where options include:
   -h
@@ -8,9 +12,11 @@ where options include:
     Keep all auxillary output files latex produces instead of removing them
   -b <bibliography file>
     Use the specified bibliography file
+  -c
+    Use the current input file exclusively, do not search for a main file.
   <input file>
     The (optional) latex input file to compile (with or without extension)"
-while getopts ":hkb:" opt; do
+while getopts ":hkcb:" opt; do
   case ${opt} in
     h )
       echo "$USAGE"
@@ -27,6 +33,9 @@ while getopts ":hkb:" opt; do
     k )
       keep=1
       ;;
+    c )
+      no_main=1
+      ;;
     \? )
       echo "Invalid option: $OPTARG" 1>&2
       ;;
@@ -37,16 +46,22 @@ while getopts ":hkb:" opt; do
 done
 shift $((OPTIND -1))
 old=$1
-main="$(find . -maxdepth 1 -mindepth 1 -name "*.latexmain" -printf "%f")"
-if [ -f "$main" ]; then
-  echo "Found mainfile: $main"
-  old="${main%.latexmain}"
+if [ ! -v "no_main" ]; then
+  while
+    main="$(find $PWD -maxdepth 1 -name "*.latexmain" -printf "%f")"
+    [ -z "$main" ] && [ "$PWD" != "/" ]; do
+    cd ../
+  done
+  if [ -f "$main" ]; then
+    echo "Found mainfile: $main"
+    old="${main%.latexmain}"
+  fi
+fi
+if [ -z "$old" ]; then
+  echo "${err}ERROR: No TeX file given and no main file found! Exiting...${reset}"
+  exit 1
 fi
 file=${old[@]//\.tex/}
-green=`tput setaf 2;`
-warn=`tput setaf 3`
-err=`tput setaf 1`
-reset=`tput sgr0`
 alias color='sed "s/.*\(W\|w\)arning.*/${warn}&${reset}/" | sed "s/\!.*\|.*\(e\|E\)rror.*/${err}&${reset}/"'
 
 remove_aux_files() {

@@ -7,3 +7,5 @@
 	template = ~/.gitmessage
 [core]
 	excludesFile = ~/.gitignore
+[pull]
+	rebase = false

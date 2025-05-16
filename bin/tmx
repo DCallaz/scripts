@@ -3,33 +3,35 @@
 command -v tmux >/dev/null 2>&1 || { printf "tmx requires tmux but it is not installed.
 Aborting." >&2; exit 1; }
 
+USAGE="Usage: tmx [-hlud] [-f format] [-d start dir] [name]
+where options include:
+  -h
+    Display this message
+  -l
+    List active sessions and stored formats
+  -u
+    Update or create a stored tmx format instead of starting a new one.
+    Uses the -f, -d options accordingly, <name> is mandatory.
+  -x
+    Delete a tmux format with the supplied name. Note the <name>
+    argument is mandatory with this option, and all other options
+    are ignored
+  -f format
+    Format the new tmux session using the format string given
+    where <format> = \"{[<op>[<ctrl>]][{<cmd>}]}\"
+      <op>:   One of \"|\" or \"_\". Splits the pane
+              horizontally or vertically respectively
+      <ctrl>: One of \"^v><\", moves the current pane
+              to the pane above, below, left or right.
+      <cmd>:  Executes <cmd> in the current pane.
+  -d start-dir
+    Start the new tmux session at the given start directory path"
+
 # Proccess cmd line options
 while getopts ":hluxf:d:" opt; do
   case ${opt} in
     h )
-      echo "Usage: tmx [-hlud] [-f format] [-d start dir] [name]"
-      echo "where options include:"
-      echo "  -h"
-      echo "    Display this message"
-      echo "  -l"
-      echo "    List active sessions and stored formats"
-      echo "  -u"
-      echo "    Update or create a stored tmx format instead of starting a new one."
-      echo "    Uses the -f, -d options accordingly, <name> is mandatory."
-      echo "  -x"
-      echo "    Delete a tmux format with the supplied name. Note the <name>"
-      echo "    argument is mandatory with this option, and all other options"
-      echo "    are ignored"
-      echo "  -f format"
-      echo "    Format the new tmux session using the format string given"
-      echo "    where <format> = \"{[<op>[<ctrl>]][{<cmd>}]}\""
-      echo "      <op>:   One of \"|\" or \"_\". Splits the pane"
-      echo "              horizontally or vertically respectively"
-      echo "      <ctrl>: One of \"^v><\", moves the current pane"
-      echo "              to the pane above, below, left or right."
-      echo "      <cmd>:  Executes <cmd> in the current pane."
-      echo "  -d start-dir"
-      echo "    Start the new tmux session at the given start directory path"
+      echo "$USAGE"
       exit 0
       ;;
     l )
@@ -65,9 +67,13 @@ while getopts ":hluxf:d:" opt; do
       ;;
     \? )
       echo "Invalid option: $OPTARG" 1>&2
+      echo "$USAGE"
+      exit 0
       ;;
     : )
       echo "Invalid option: $OPTARG requires an argument" 1>&2
+      echo "$USAGE"
+      exit 0
       ;;
   esac
 done

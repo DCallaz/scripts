@@ -258,7 +258,7 @@ augroup whitespace
   autocmd BufWrite * :call <SID>StripTrailingWhiteSpaces()
 augroup END
 nnoremap  <leader>s :call <SID>StripTrailingWhiteSpaces()<CR>
-nnoremap <C-f> :%foldc<CR>
+nnoremap <C-f> ggVGzC
 nnoremap R :call Reorder()<CR>
 nnoremap <leader>c  :call Comment()<CR>
 vnoremap <leader>c  :call Comment()<CR>
@@ -350,6 +350,7 @@ set foldenable
 set foldlevelstart=10
 set foldnestmax=10
 set foldmethod=indent
+set foldminlines=0
 set textwidth=80
 "END FOLD SETTINGS
 syntax enable
@@ -468,7 +469,8 @@ set foldmethod=indent
 " 'plaintex' instead of 'tex', which results in vim-latex not being loaded.
 " The following changes the default filetype back to 'tex':
 let g:tex_flavor='latex'
-let g:Tex_FoldedEnvironments = 'verbatim,comment,eq,gather,align,figure,table,lstlisting,algorithm,algorithmic,enumerate,itemize,thebibliography,keywords,abstract,titlepage'
+let g:Tex_FoldedCommands = ',caption'
+let g:Tex_FoldedEnvironments = 'verbatim,comment,eq,gather,align,figure,table,sidewaystable,lstlisting,algorithm,algorithmic,tabular,enumerate,itemize,thebibliography,keywords,abstract,titlepage'
 " }}}
 
 "vim:foldmethod=marker:foldlevel=0
