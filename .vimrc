@@ -413,15 +413,18 @@ function SetPythonPath()
   " Get the path of the closest python executable
   :cd %:p:h
   let file_dir = fnamemodify(@%, ':p:h')
-  let hidden_pyfile = fnamemodify(findfile('python3', '**0/.*/bin;'), ':p')
-  let visible_pyfile = fnamemodify(findfile('python3', '**0/*/bin;'), ':p')
+  let pyfile = fnamemodify(system('python3 -c "import sys;print(sys.prefix, end=\"\")"') . '/bin/python3', ':p')
+  if (pyfile == fnamemodify('~/.global_python_venv/bin/python3', ':p'))
+    let hidden_pyfile = fnamemodify(findfile('python3', '**0/.*/bin;'), ':p')
+    let visible_pyfile = fnamemodify(findfile('python3', '**0/*/bin;'), ':p')
 
-  let hidden_pre = matchlist(hidden_pyfile."\0".file_dir, '\v^(.+).*'."\0".'\1')[1]
-  let visible_pre = matchlist(visible_pyfile."\0".file_dir, '\v^(.+).*'."\0".'\1')[1]
-  if (strlen(hidden_pre) >= strlen(visible_pre))
-    let pyfile = hidden_pyfile
-  else
-    let pyfile = visible_pyfile
+    let hidden_pre = matchlist(hidden_pyfile."\0".file_dir, '\v^(.+).*'."\0".'\1')[1]
+    let visible_pre = matchlist(visible_pyfile."\0".file_dir, '\v^(.+).*'."\0".'\1')[1]
+    if (strlen(hidden_pre) >= strlen(visible_pre))
+      let pyfile = hidden_pyfile
+    else
+      let pyfile = visible_pyfile
+    endif
   endif
   :cd -
   " end
