@@ -45,7 +45,9 @@ while getopts ":hkcb:" opt; do
   esac
 done
 shift $((OPTIND -1))
-old=$1
+old="$(basename "$1")"
+cd "$(dirname "$1")"
+home="$PWD"
 if [ ! -v "no_main" ]; then
   while
     main="$(find $PWD -maxdepth 1 -name "*.latexmain" -printf "%f")"
@@ -55,6 +57,8 @@ if [ ! -v "no_main" ]; then
   if [ -f "$main" ]; then
     echo "Found mainfile: $main"
     old="${main%.latexmain}"
+  else
+    cd "$home"
   fi
 fi
 if [ -z "$old" ]; then
