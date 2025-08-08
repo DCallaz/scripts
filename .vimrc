@@ -19,7 +19,7 @@ Plug 'gsiano/vmux-clipboard'
 Plug 'jrozner/vim-antlr'
 Plug 'vim-latex/vim-latex'
 Plug 'mbbill/undotree'
-Plug 'vim-scripts/javacomplete'
+" Plug 'vim-scripts/javacomplete'
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 call plug#end()
 " }}}
@@ -73,7 +73,7 @@ function Reorder()
   call <SID>StripTrailingWhiteSpaces()
   let len = strwidth(getline("."))
   " Merge if current line < 80 and next line is not comment or blank
-  if len < 80 && getline(line(".")+1) !~ '^\s*$\|^\s*'.com
+  if len < 80 && getline(line(".")+1) =~ '^\s*[^\\ \t{}'.com.']'
     execute "normal M"
   endif
   let len = strwidth(getline("."))
@@ -84,7 +84,7 @@ function Reorder()
       call Break()
     endif
 
-    if getline(line(".")+1) =~ '^\s*$\|^\s*'.com
+    if getline(line(".")+1) !~ '^\s*[^\\ \t{}'.com.']'
       break
     endif
     call <SID>StripTrailingWhiteSpaces()
@@ -119,7 +119,7 @@ function Merge()
   endif
 endfunction
 
-function Comment()
+function _Comment()
   let l = line(".")
   let c = col(".")
   let line=getline('.')
@@ -148,6 +148,48 @@ function Comment()
   endif
 endfunction
 
+function Comment() range
+  " Get the comment string
+  let comment = split(&commentstring, '%s')
+  if len(comment) > 0
+    let com = trim(comment[0])
+  else
+    let com = "#"
+  endif
+  let len = strlen(com)
+
+  " Check if comment/uncomment and get lowest indent
+  let type = "uncomment"
+  let indent = match(getline(a:firstline),'\S')+1
+  for l in range(a:firstline, a:lastline)
+    let line = getline(l)
+    " If any line does not contain a comment, then comment, otherwise uncomment
+    if line !~ '^\s*' . com
+      let type = "comment"
+    endif
+    let indent = min([indent, match(getline(l),'\S')+1])
+  endfor
+
+  " Comment/uncomment all lines
+  if type ==? "comment"
+    " comment the block
+    for l in range(a:firstline, a:lastline)
+      " first set the indent level
+      silent call cursor(l, indent)
+      let line = getline(l)
+      " then comment the block
+      if line =~ '^\s*$'
+        silent execute "normal i" . com
+      else
+        silent execute "normal i" . com . " "
+      endif
+    endfor
+  else
+    " uncomment the block
+    silent execute a:firstline . ',' . a:lastline . 's@^\(\s*\)\M' . com . '\m\( \(\s\+\)\@!\)\?@\1@'
+  endif
+endfunction
+
 function Controlc()
   let extension = expand('%:e')
   if extension == "md"
@@ -173,6 +215,22 @@ endfunc
 function Format_ALE()
   echo v:lnum v:count
   return 0
+endfunc
+
+function ToggleFlake8()
+  if (exists("b:ale_linters.python") && index(b:ale_linters.python, 'flake8') != -1)
+    call remove(b:ale_linters.python, index(b:ale_linters.python, 'flake8'))
+  else
+    if (!exists("b:ale_linters"))
+      let b:ale_linters = {'python': []}
+    endif
+    if (!exists("b:ale_linters.python"))
+      let b:ale_linters.python = []
+    endif
+    if (index(b:ale_linters.python, 'flake8') == -1)
+      call add(b:ale_linters.python, 'flake8')
+    endif
+  endif
 endfunc
 
 function ScrollPopup(up=0)
@@ -281,6 +339,7 @@ nnoremap \ :noh<return>
 nnoremap <C-\> :NERDTreeToggle<CR>
 nnoremap <C-u> :UndotreeToggle<CR>
 vnoremap p	"0p
+nnoremap vv <C-v>
 "Join lines
 noremap M :call Merge()<CR>
 "move line up/down
@@ -359,6 +418,9 @@ set wildmenu
 set modelines=1
 set synmaxcol=500
 " }}}
+"VIMDIFF SETTINGS
+set diffopt+=algorithm:patience
+"END VIMDIFF SETTINGS
 
 " air-line {{{
 let g:Powerline_symbols = 'fancy'
