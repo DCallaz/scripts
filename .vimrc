@@ -160,14 +160,14 @@ function Comment() range
 
   " Check if comment/uncomment and get lowest indent
   let type = "uncomment"
-  let indent = match(getline(a:firstline),'\S')+1
+  let indent = match(getline(a:firstline),'\S\|^\s*$')+1
   for l in range(a:firstline, a:lastline)
     let line = getline(l)
     " If any line does not contain a comment, then comment, otherwise uncomment
     if line !~ '^\s*' . com
       let type = "comment"
     endif
-    let indent = min([indent, match(getline(l),'\S')+1])
+    let indent = min([indent, match(getline(l),'\S\|^\s*$')+1])
   endfor
 
   " Comment/uncomment all lines
