@@ -19,7 +19,6 @@ Plug 'gsiano/vmux-clipboard'
 Plug 'jrozner/vim-antlr'
 Plug 'vim-latex/vim-latex'
 Plug 'mbbill/undotree'
-" Plug 'vim-scripts/javacomplete'
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 call plug#end()
 " }}}
@@ -69,11 +68,12 @@ function Reorder()
   else
     let com = "#"
   endif
+  let reg = '^\s*\([^\\ \t{}'.com.']\|\\\(begin\)\@!\)'
 
   call <SID>StripTrailingWhiteSpaces()
   let len = strwidth(getline("."))
   " Merge if current line < 80 and next line is not comment or blank
-  if len < 80 && getline(line(".")+1) =~ '^\s*[^\\ \t{}'.com.']'
+  if len < 80 && getline(line(".")+1) =~ reg
     execute "normal M"
   endif
   let len = strwidth(getline("."))
@@ -84,7 +84,7 @@ function Reorder()
       call Break()
     endif
 
-    if getline(line(".")+1) !~ '^\s*[^\\ \t{}'.com.']'
+    if getline(line(".")+1) !~ reg
       break
     endif
     call <SID>StripTrailingWhiteSpaces()
@@ -468,6 +468,8 @@ let g:ale_python_auto_virtualenv = 1
 " youcompleteme settings
 " OPTIONAL: do not display popup messages on hover by default.
 let g:ycm_auto_hover = ''
+let g:ycm_key_list_select_completion = ['<Down>']
+let g:ycm_key_list_stop_completion = ['<TAB>']
 
 " Set python virtual environment interpreter for YCM and ALE
 autocmd Filetype python ++once call SetPythonPath()
@@ -539,6 +541,13 @@ let g:Tex_FoldedEnvironments = 'verbatim,comment,eq,gather,align,figure,table,si
 " }}}
 
 "vim:foldmethod=marker:foldlevel=0
+
+" Disable ALE linting between saves & enable spell for latex files
+if (&ft == 'tex' || &ft == 'plaintex' || &ft == 'context')
+  let g:ale_lint_on_text_changed = 'never'
+  let g:ale_lint_on_insert_leave = 0
+  :set spell
+endif
 
 " Python black plugin (for ale)
 "let g:black_linelength = 80
