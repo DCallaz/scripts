@@ -186,7 +186,14 @@ function Comment() range
     endfor
   else
     " uncomment the block
-    silent execute a:firstline . ',' . a:lastline . 's@^\(\s*\)\M' . com . '\m\( \(\s\+\)\@!\)\?@\1@'
+    silent call cursor(a:firstline, 1)
+    if search('^\v\s*\V' . com . '\v([^ ]|$)', 'cn', a:lastline)
+      " Not all lines have spaces after comments
+      silent execute a:firstline . ',' . a:lastline . 's@\v^(\s*)\V' . com . '@\1@'
+    else
+      " All lines have spaces after comments
+      silent execute a:firstline . ',' . a:lastline . 's@\v^(\s*)\V' . com . '\v @\1@'
+    endif
   endif
 endfunction
 
@@ -284,7 +291,9 @@ augroup autocom
   autocmd!
   " Executes the following on exit of a markdown file
   autocmd VimLeave *.md !mark -c %
-
+  " Execute latex specific options
+  autocmd Filetype bib setlocal nospell
+  autocmd Filetype tex,latex,plaintex,context call SetLatexOptions()
 augroup END
 
 filetype plugin on
@@ -471,8 +480,11 @@ let g:ycm_auto_hover = ''
 let g:ycm_key_list_select_completion = ['<Down>']
 let g:ycm_key_list_stop_completion = ['<TAB>']
 
-" Set python virtual environment interpreter for YCM and ALE
-autocmd Filetype python ++once call SetPythonPath()
+augroup pyenv
+  autocmd!
+  " Set python virtual environment interpreter for YCM and ALE
+  autocmd Filetype python ++once call SetPythonPath()
+augroup END
 function SetPythonPath()
   " Get the path of the closest python executable
   :cd %:p:h
@@ -543,11 +555,11 @@ let g:Tex_FoldedEnvironments = 'verbatim,comment,eq,gather,align,figure,table,si
 "vim:foldmethod=marker:foldlevel=0
 
 " Disable ALE linting between saves & enable spell for latex files
-if (&ft == 'tex' || &ft == 'plaintex' || &ft == 'context')
-  let g:ale_lint_on_text_changed = 'never'
-  let g:ale_lint_on_insert_leave = 0
-  :set spell
-endif
+function SetLatexOptions()
+  let b:ale_lint_on_text_changed = 'never'
+  let b:ale_lint_on_insert_leave = 0
+  :setlocal spell
+endfunction
 
 " Python black plugin (for ale)
 "let g:black_linelength = 80
