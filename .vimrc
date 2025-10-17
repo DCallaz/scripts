@@ -68,7 +68,7 @@ function Reorder()
   else
     let com = "#"
   endif
-  let reg = '^\s*\([^\\ \t{}'.com.']\|\\\(begin\)\@!\)'
+  let reg = '^\s*\([^\\ \t{}'.com.']\|\\\(begin\|end\)\@!\)'
 
   call <SID>StripTrailingWhiteSpaces()
   let len = strwidth(getline("."))
